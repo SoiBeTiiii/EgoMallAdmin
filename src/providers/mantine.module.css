@@ -1,0 +1,21 @@
+.input {
+  &[data-variant="underline"] {
+    border: 2px solid transparent;
+    border-radius: 5px;
+    padding-left: 8px;
+    padding-right: 8px;
+    background-color: white;
+
+    &:focus,
+    &:focus-visible {
+      border-color: var(--mantine-color-gray-5);
+      outline: none;
+    }
+
+    &:active {
+      border-color: var(--mantine-color-gray-5);
+    }
+
+    transition: border-color 0.2s ease-in-out;
+  }
+}

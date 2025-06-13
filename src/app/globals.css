@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* body {
+  font-family: 'Tahoma', sans-serif;
+} */
+ul {
+  list-style: disc;
+  list-style-position: outside;
+}
+
+ol {
+  list-style: decimal;
+  list-style-position: outside;
+}
+
+.m_d6493fad :where(img) {
+  max-width: unset !important;
+  margin-bottom: unset !important;
+}
+
+/* .m_b23fa0ef:where([data-with-table-border]) {
+  border: none !important;
+} */
+
+.MRT_TableHeadCell-module_content-wrapper-nowrap__-4aIg {
+  white-space: normal !important;
+}
+.m_4e7aa4fd:where([data-with-row-border]) {
+  border-bottom: calc(0.0625rem * var(--mantine-scale)) solid var(--table-border-color) !important;
+  border-top: calc(0.0625rem * var(--mantine-scale)) solid var(--table-border-color) !important;
+}
+
+.MRT_TableBody-module_empty-row-td-content__Cc2XW {
+  max-width: unset !important; /* Hoặc max-width: initial !important; */
+}
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: inline; /* Hoặc giá trị khác mà bạn mong muốn */
+  vertical-align: auto; /* Hoặc giá trị khác mà bạn mong muốn */
+}
+
+.tabler-icon {
+  width: 20px;
+  height: 20px;
+}
+@media (max-width: 640px) {
+  :root {
+    /* Kích thước chữ cho màn hình nhỏ (mobile) */
+    font-size: 14px;
+  }
+}
