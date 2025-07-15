@@ -25,15 +25,15 @@ export default function Page() {
                     unit="Triệu VNĐ" description={"So với tháng trước"}
                     icons={<IconReportMoney opacity={"0.3"} style={{ width: '100%', height: '100%' }} stroke={1.5} />} diff={34} />
                 <AQStatCard1
-                    title={"Tổng số khóa học"} value={'152'}
+                    title={"Tổng doanh thu"} value={'152'}
                     description={"So với tháng trước"}
                     icons={<IconBook opacity={"0.3"} style={{ width: '100%', height: '100%' }} stroke={1.5} />} diff={18} />
                 <AQStatCard1
-                    title={"Tổng số khóa thi"} value={'36'}
+                    title={"Tổng sản phẩm"} value={'36'}
                     description={"So với tháng trước"}
                     icons={<IconClipboardCheck opacity={"0.3"} style={{ width: '100%', height: '100%' }} stroke={1.5} />} diff={60} />
                 <AQStatCard1
-                    title={"Tổng số học viên"} value={'3.042'}
+                    title={"Tổng số khách hàng"} value={'3.042'}
                     description={"So với tháng trước"}
                     icons={<IconUserPlus opacity={"0.3"} style={{ width: '100%', height: '100%' }} stroke={1.5} />} diff={-30} />
             </SimpleGrid>

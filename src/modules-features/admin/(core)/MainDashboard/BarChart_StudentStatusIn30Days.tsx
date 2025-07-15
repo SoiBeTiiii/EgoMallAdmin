@@ -3,11 +3,11 @@ import { BarChart } from '@mantine/charts';
 import { Group, Paper, Text, useMantineColorScheme } from '@mantine/core';
 
 const data = [
-    { student_status: 'Chưa xếp lớp', amount: 94, color: 'orange.6' },
-    { student_status: 'Đang học', amount: 154, color: 'blue.6' },
-    { student_status: 'Tạm dừng', amount: 32, color: 'yellow.6' },
-    { student_status: 'Hoàn thành', amount: 120, color: 'green.6' },
-    { student_status: 'Bỏ học', amount: 5, color: '#96172e' }
+    { student_status: 'Chờ xử lý', amount: 94, color: 'orange.6' },
+    { student_status: 'Đang giao hàng', amount: 154, color: 'blue.6' },
+    { student_status: 'Đã hủy', amount: 32, color: 'yellow.6' },
+    { student_status: 'Đã hoàn thành', amount: 120, color: 'green.6' },
+    { student_status: 'Trả hàng / Khiếu nại', amount: 5, color: '#96172e' }
 ];
 interface ChartTooltipProps {
     label: string;
@@ -37,7 +37,7 @@ export default function BarChart_StudentStatusIn30Days() {
     return (
         <>
             <Group>
-                <Text mb={"50"}>Biểu đồ trạng thái học viên trong 30 ngày qua</Text>
+                <Text mb={"50"}>Biểu đồ trạng thái đơn hàng trong 30 ngày qua</Text>
                 <BarChart
                     h={200}
                     w={"90%"}
@@ -49,7 +49,7 @@ export default function BarChart_StudentStatusIn30Days() {
                     tooltipProps={{
                         content: ({ label, payload }) => <ChartTooltip label={label} payload={payload} />,
                     }}
-                    yAxisLabel="Tổng số học viên"
+                    yAxisLabel="Tổng số đơn hàng"
                     yAxisProps={{ width: 64 }}
                     maxBarWidth={64}
                     tickLine="y"

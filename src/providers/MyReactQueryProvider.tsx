@@ -15,7 +15,7 @@ export default function MyReactQueryProvider({ children }: { children?: ReactNod
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      <ReactQueryDevtools buttonPosition={"bottom-left"} initialIsOpen={false} />
+      {/* <ReactQueryDevtools buttonPosition={"bottom-left"} initialIsOpen={false} /> */}
     </QueryClientProvider>
   )
 }

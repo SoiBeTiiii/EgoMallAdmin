@@ -247,13 +247,13 @@ export function BasicAppShell({
               }}
             >
               <Text c="green" fw="bold">
-                AQ Verification - Phần mềm Quản lý minh chứng kiểm định
+                EGOMall - Trang quản lý hệ thống
               </Text>
             </Group>
 
             {/* Right side */}
             <Group>
-              <Text>Học kỳ làm việc</Text>
+              {/* <Text>Học kỳ làm việc</Text>
               <Select
                 w={selectMedia ? 245 : 150}
                 placeholder="Chọn công thức sắp xếp"
@@ -262,7 +262,7 @@ export function BasicAppShell({
                   { value: "1", label: "Năm học 2024 - 2025 Học kỳ 1" },
                   { value: "2", label: "Năm học 2024 - 2025 Học kỳ 1" },
                 ]}
-              />
+              /> */}
               <MySwitchTheme />
             </Group>
           </Group>
@@ -285,11 +285,11 @@ export function BasicAppShell({
 
             {/* Center: Short title */}
             <Text c="green" fw="bold" size="sm">
-              AQ EduCourseEvaluation
+              EgoMall
             </Text>
 
             {/* Right: Just theme switch and dropdown menu for other options */}
-            <Group>
+            {/* <Group>
               <Select
                 w={100}
                 size="xs"
@@ -301,7 +301,7 @@ export function BasicAppShell({
                 ]}
               />
               <MySwitchTheme />
-            </Group>
+            </Group> */}
           </Group>
         )}
       </AppShell.Header>
@@ -324,7 +324,7 @@ export function BasicAppShell({
         <AppShell.Section p={"md"}>
           <Divider></Divider>
           <Image
-            src={"/imgs/0/IMG0LogoAQTech.png"}
+            // src={"/imgs/0/IMG0LogoAQTech.png"}
             h={50}
             alt=""
             w="auto"

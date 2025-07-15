@@ -4,9 +4,9 @@ import { Group, Paper, Text, useMantineColorScheme } from '@mantine/core';
 // import { BarChart } from "recharts";
 
 const data = [
-    { course_status: 'Đang mở', amount: 120, color: 'blue.6' },
-    { course_status: 'Hoàn thành', amount: 50, color: 'green.6' },
-    { course_status: 'Đã hủy', amount: 32, color: 'red.6' }
+    { course_status: 'Còn hàng', amount: 120, color: 'blue.6' },
+    { course_status: 'Sắp hết hàng', amount: 50, color: 'green.6' },
+    { course_status: 'Hết hàng', amount: 32, color: 'red.6' }
 ];
 interface ChartTooltipProps {
     label: string;
@@ -47,7 +47,7 @@ export default function BarChart_CourseStatus() {
     return (
         <>
             <Group>
-                <Text mb={"50"}>Biểu đồ phân tích trạng thái khóa học</Text>
+                <Text mb={"50"}>Chuyển thành trạng thái sản phẩm</Text>
                 <BarChart
                     h={200}
                     w={"90%"}

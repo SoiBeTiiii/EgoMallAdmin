@@ -42,7 +42,7 @@ export default function LineChart_TotalStudentIn12Months() {
     return (
         <>
             <Group>
-                <Text mb={"50"}>Biểu đồ số lượng học viên 12 tháng qua</Text>
+                <Text mb={"50"}>Tổng đơn hàng theo tháng trong 12 tháng qua</Text>
                 <LineChart
                     w={"100%"}
                     h={200}
@@ -55,7 +55,7 @@ export default function LineChart_TotalStudentIn12Months() {
                         content: ({ label, payload }) => <ChartTooltip label={label} payload={payload} />,
                     }}
                     curveType="linear"
-                    yAxisLabel="Tổng số học viên"
+                    yAxisLabel="Tổng số đơn hàng"
                     tickLine="y"
                 />
             </Group>

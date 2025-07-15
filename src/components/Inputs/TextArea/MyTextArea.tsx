@@ -7,5 +7,6 @@ interface IMyTextArea extends TextareaProps {
 export default function MyTextArea({ label, ...rest }: IMyTextArea) {
     return (
         <Textarea label={label} placeholder={label ? `Nhập ${label?.toLowerCase()}` : ""}{...rest} />
+
     )
 }

@@ -3,10 +3,10 @@ import { BarChart } from '@mantine/charts';
 import { Group, Paper, Text, useMantineColorScheme } from '@mantine/core';
 
 const data = [
-    { course_status: 'Đang mở', amount: 55, color: 'blue.6' },
-    { course_status: 'Hoàn thành', amount: 20, color: 'green.6' },
+    { course_status: 'Đang xử lý', amount: 55, color: 'blue.6' },
+    { course_status: 'Đã giao', amount: 20, color: 'green.6' },
     { course_status: 'Đã hủy', amount: 10, color: 'red.6' },
-    { course_status: 'Đã cấp chứng chỉ', amount: 15, color: 'orange.6' }
+    { course_status: 'Đã thanh toán', amount: 15, color: 'orange.6' }
 ];
 interface ChartTooltipProps {
     label: string;
@@ -35,7 +35,7 @@ export default function BarChart_ExamStatus() {
     return (
         <>
             <Group>
-                <Text mb={"50"}>Biểu đồ phân tích trạng thái khóa thi</Text>
+                <Text mb={"50"}>chuyển thành trạng thái đơn hàng</Text>
                 <BarChart
                     h={200}
                     w={"90%"}

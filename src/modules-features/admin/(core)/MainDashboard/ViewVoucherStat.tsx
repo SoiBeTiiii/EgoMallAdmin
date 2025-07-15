@@ -282,7 +282,7 @@ export function PieChart_VoucherUsedPercentage() {
     return (
         <>
             <MyFlexColumn>
-                <Text mb={"20"}>Biểu đồ phần trăm sử dụng mã giảm giá học viên trong 60 ngày qua</Text>
+                <Text mb={"20"}>Biểu đồ phần trăm mã khuyến mãi theo sản phẩm trong 60 ngày qua</Text>
                 <Center>
                     <PieChart
                         startAngle={90}

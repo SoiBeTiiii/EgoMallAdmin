@@ -12,10 +12,10 @@ export default function Page() {
       router.push("/auth/login")
       return
     }
-    router.push("/admin/core71678")
+    router.push("/auth/login")
 
   }, [S0Auth.state.token])
   return (
-    <MyBoxesBackground title="Hệ thống thông tin quản lí đào tạo ngắn hạn" />
+    <MyBoxesBackground title="Hệ thống quản lí trang web EGOMall" />
   );
 }

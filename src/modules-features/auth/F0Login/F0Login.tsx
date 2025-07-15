@@ -29,23 +29,23 @@ export default function F0Login() {
     const mutation = useM_Account_Sigin()
     const form = useForm({
         initialValues: {
-            username: "admin",
-            password: "123456"
+            account: "admin@egomall.local",
+            password: "Admin123!"
         },
         validate: {
-            username: (value) => value ? null : 'Không được để trống',
+            account: (value) => value ? null : 'Không được để trống',
             password: (value) => value ? null : 'Không được để trống'
         }
     })
-    function handleSubmit(userName?: string, passWord?: string) {
+    function handleSubmit(account?: string, password?: string) {
         loadingState[1](true)
         mutation.mutate({
-            "userName": userName,
-            "passWord": passWord
+            "account": account,
+            "password": password
         }, {
             onSuccess: (data) => {
                 if (data.isSuccess === false) {
-                    form.setFieldError("username", "Tài khoản không tồn tại!")
+                    form.setFieldError("account", "Tài khoản không tồn tại!")
                     return
                 }
                 if (data.isSuccess == 0) {
@@ -54,7 +54,7 @@ export default function F0Login() {
                 }
                 loadingState[1](false)
                 S0Auth.setProperty("token", data.data.token)
-                router.replace("/admin/core71678")
+                router.replace("/admin/dashboard")
             },
             onSettled: () => {
                 loadingState[1](true)
@@ -74,10 +74,10 @@ export default function F0Login() {
                     </Anchor>
                 </Text>
             </Flex>
-            <form onSubmit={form.onSubmit(async values => handleSubmit(values.username, values.password))}>
+            <form onSubmit={form.onSubmit(async values => handleSubmit(values.account, values.password))}>
                 <MyFlexColumn>
                     <TextInput
-                        {...form.getInputProps("username")}
+                        {...form.getInputProps("account")}
                         label="Tài khoản"
                         placeholder="Nhập tài khoản của bạn"
                         withAsterisk
@@ -103,7 +103,7 @@ export default function F0Login() {
                     <Button
                         onClick={() => {
                             S0Auth.setProperty("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NTA4IiwiY19oYXNoIjoiNjgxNTMzZjI1OTU5NjIxOGY5ZWQ4YjRjZGU2Nzk5ODAyYWNlOTVmZjdiODQ3MWE3MjY4ZmM1NTc3ZDkxOTJjNiIsImp0aSI6IjljYjk2N2E4LTRlMWMtNDFkMi05NmU0LTExYzhlOThlYjEyOCIsImlhdCI6MTczNjEyODA2OCwibmJmIjoxNzM2MTI4MDY3LCJleHAiOjE3NDM5MDQwNjcsImlzcyI6Iklzc3VlciIsImF1ZCI6IkF1ZGllbmNlIn0.qCv-erjW74az5C9_Llh5N5aXO9yyLm6smB5NCnjm_uc")
-                            router.replace("/admin/vf2cwmibmh")
+                            router.replace("/admin/dashboard")
                         }}
                         type="button"
                         fullWidth >
@@ -117,10 +117,12 @@ export default function F0Login() {
 }
 
 function useM_Account_Sigin() {
-    const ENDPOINT = process.env.NEXT_PUBLIC_API + "/Account/SignIn"
+    const ENDPOINT = process.env.NEXT_PUBLIC_API2 + "/login"
     const mutation = useMutation({
-        mutationFn: async (values: { userName?: string, passWord?: string }) => {
-            const result = await axios.post(ENDPOINT, values)
+        mutationFn: async (values: { account?: string, password?: string }) => {
+            const result = await axios.post(ENDPOINT, values, {
+                withCredentials: true // 👈 thêm dòng này!
+            })
             return result.data
         }
     })

@@ -2,22 +2,22 @@ import { BarChart } from '@mantine/charts';
 import { Group, Paper, Text, useMantineColorScheme } from '@mantine/core';
 
 const data = [
-    { courseId: 1, courseName: 'Introduction to Programming K2024', progress: 50 },
-    { courseId: 2, courseName: 'Data Structures K2024', progress: 75 },
-    { courseId: 3, courseName: 'Algorithms K2023', progress: 60 },
-    { courseId: 4, courseName: 'Operating Systems K2024', progress: 80 },
-    { courseId: 5, courseName: 'Databases K2023', progress: 90 },
-    { courseId: 6, courseName: 'Computer Networks K2024', progress: 70 },
-    { courseId: 7, courseName: 'Software Engineering K2024', progress: 85 },
-    { courseId: 8, courseName: 'Artificial Intelligence K2023', progress: 65 },
-    { courseId: 9, courseName: 'Machine Learning K2024', progress: 55 },
-    { courseId: 10, courseName: 'Human-Computer Interaction K2023', progress: 45 },
-    { courseId: 11, courseName: 'Cybersecurity K2024', progress: 75 },
-    { courseId: 12, courseName: 'Cloud Computing K2023', progress: 80 },
-    { courseId: 13, courseName: 'Big Data Analytics K2024', progress: 70 },
-    { courseId: 14, courseName: 'Internet of Things K2023', progress: 60 },
-    { courseId: 15, courseName: 'Blockchain Technology K2024', progress: 50 },
-    { courseId: 16, courseName: 'Quantum Computing K2023', progress: 40 }
+  { courseId: 1, courseName: 'Son lì Luxury Matte Red', progress: 50 },
+  { courseId: 2, courseName: 'Serum dưỡng trắng LumiSkin', progress: 75 },
+  { courseId: 3, courseName: 'Kem chống nắng DailyShield', progress: 60 },
+  { courseId: 4, courseName: 'Toner dịu nhẹ PureCare', progress: 80 },
+  { courseId: 5, courseName: 'Mặt nạ đất sét GreenTea', progress: 90 },
+  { courseId: 6, courseName: 'Sữa rửa mặt Herbal Clean', progress: 70 },
+  { courseId: 7, courseName: 'Kem dưỡng ẩm DeepHydra', progress: 85 },
+  { courseId: 8, courseName: 'Phấn phủ Silky Powder', progress: 65 },
+  { courseId: 9, courseName: 'Sữa tắm Relax Lavender', progress: 55 },
+  { courseId: 10, courseName: 'Dầu gội Organic HairCare', progress: 45 },
+  { courseId: 11, courseName: 'Tinh chất trị mụn AcneX', progress: 75 },
+  { courseId: 12, courseName: 'Nước hoa mini Passion Bloom', progress: 80 },
+  { courseId: 13, courseName: 'Kem nền Natural Glow', progress: 70 },
+  { courseId: 14, courseName: 'Son dưỡng LipCare Pinky', progress: 60 },
+  { courseId: 15, courseName: 'Sáp khử mùi FreshFeel', progress: 50 },
+  { courseId: 16, courseName: 'Tẩy tế bào chết BodyScrub Coffee', progress: 40 }
 ];
 
 interface ChartTooltipProps {
@@ -34,19 +34,19 @@ function ChartTooltip({ label, payload }: ChartTooltipProps) {
             </Text>
             {payload.map((item: any) => (
                 <Text key={item.name} c={"black"} fz="sm">
-                    Tiến độ: {item.value}%
+                    Tỉ lệ sản phẩm đã bán (%): {item.value}%
                 </Text>
             ))}
         </Paper>
     );
 }
 
-export default function HBarChart_CourseProgressPercentage() {
+export default function HBarChart_CourseprogressPercentage() {
     const colorTheme = useMantineColorScheme()
 
     return (
         <Group>
-            <Text mb={"20"}>Biểu đồ theo dõi tiến độ giảng dạy của lớp</Text>
+            <Text mb={"20"}>Top sản phẩm bán chạy nhất trong 3 tháng qua</Text>
             <BarChart
                 h={800}
                 w={"96%"}
@@ -69,8 +69,8 @@ export default function HBarChart_CourseProgressPercentage() {
                 }}
                 maxBarWidth={20}
                 tickLine="x"
-                yAxisLabel="Danh sách lớp"
-                xAxisLabel="Tiến độ hoàn thành (%)"
+                yAxisLabel="Danh sách sản phẩm"
+                xAxisLabel=" Tỉ lệ sản phẩm đã bán (%)"
             />
         </Group>
     );

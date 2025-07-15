@@ -55,7 +55,7 @@ export default function LineChart_RevenueIn12Months() {
     return (
         <>
             <Group>
-                <Text mb={"50"}>Biểu đồ phân tích doanh thu khóa học 12 tháng qua</Text>
+                <Text mb={"50"}>Doanh thu 12 tháng gần nhất</Text>
                 <LineChart
                     w={"100%"}
                     h={200}

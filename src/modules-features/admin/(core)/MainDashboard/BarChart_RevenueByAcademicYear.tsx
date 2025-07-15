@@ -3,13 +3,13 @@ import { BarChart } from '@mantine/charts';
 import { Group, Paper, Text, useMantineColorScheme } from '@mantine/core';
 
 const data = [
-    { academic_year: 'K2024', revenue: 167000000 },
-    { academic_year: 'K2023', revenue: 132000000 },
-    { academic_year: 'K2022', revenue: 69000000 },
-    { academic_year: 'K2021', revenue: 85000000 },
-    { academic_year: 'K2020', revenue: 92000000 },
-    { academic_year: 'K2019', revenue: 78000000 },
-    { academic_year: 'K2018', revenue: 105000000 }
+    { academic_year: 'Tempora', revenue: 167000000 },
+    { academic_year: 'Bán chạy', revenue: 132000000 },
+    { academic_year: 'Laudantium', revenue: 69000000 },
+    { academic_year: 'Sapiente', revenue: 85000000 },
+    { academic_year: 'Neque', revenue: 92000000 },
+    { academic_year: 'Explicabo', revenue: 78000000 },
+    { academic_year: 'Incidunt', revenue: 105000000 }
 ];
 interface ChartTooltipProps {
     label: string;
@@ -51,7 +51,7 @@ export default function BarChart_RevenueByAcademicYear() {
     return (
         <>
             <Group>
-                <Text mb={"50"}>Biểu đồ phân tích doanh thu khóa học</Text>
+                <Text mb={"50"}>Phân tích doanh thu theo danh mục</Text>
                 <BarChart
                     h={200}
                     w={"90%"}

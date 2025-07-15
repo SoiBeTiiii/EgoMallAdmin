@@ -46,7 +46,7 @@ export default function LineChart_TotalRevenueByDiscountIn3Months() {
     return (
         <>
             <Group>
-                <Text mb={"50"}>Doanh thu sử dụng chiết khấu 3 tháng qua</Text>
+                <Text mb={"50"}>Doanh thu từ đơn hàng có áp dụng khuyến mãi (3 tháng qua)</Text>
                 <LineChart
                     w={"100%"}
                     h={200}

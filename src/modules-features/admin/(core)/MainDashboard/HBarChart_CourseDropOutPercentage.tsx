@@ -2,23 +2,24 @@ import { BarChart } from '@mantine/charts';
 import { Group, Paper, Text, useMantineColorScheme } from '@mantine/core';
 
 const data = [
-    { courseId: 1, courseName: 'Introduction to Programming K2024', dropOutPercent: 5 },
-    { courseId: 2, courseName: 'Data Structures K2024', dropOutPercent: 0 },
-    { courseId: 3, courseName: 'Algorithms K2023', dropOutPercent: 0 },
-    { courseId: 4, courseName: 'Operating Systems K2024', dropOutPercent: 0 },
-    { courseId: 5, courseName: 'Databases K2023', dropOutPercent: 0 },
-    { courseId: 6, courseName: 'Computer Networks K2024', dropOutPercent: 2 },
-    { courseId: 7, courseName: 'Software Engineering K2024', dropOutPercent: 0 },
-    { courseId: 8, courseName: 'Artificial Intelligence K2023', dropOutPercent: 0 },
-    { courseId: 9, courseName: 'Machine Learning K2024', dropOutPercent: 0 },
-    { courseId: 10, courseName: 'Human-Computer Interaction K2023', dropOutPercent: 45 },
-    { courseId: 11, courseName: 'Cybersecurity K2024', dropOutPercent: 30 },
-    { courseId: 12, courseName: 'Cloud Computing K2023', dropOutPercent: 1 },
-    { courseId: 13, courseName: 'Big Data Analytics K2024', dropOutPercent: 10 },
-    { courseId: 14, courseName: 'Internet of Things K2023', dropOutPercent: 0 },
-    { courseId: 15, courseName: 'Blockchain Technology K2024', dropOutPercent: 0 },
-    { courseId: 16, courseName: 'Quantum Computing K2023', dropOutPercent: 0 }
-];
+  { courseId: 1, courseName: 'Son lì Luxury Matte Red', dropOutPercent: 5 },
+  { courseId: 2, courseName: 'Serum dưỡng trắng LumiSkin', dropOutPercent: 0 },
+  { courseId: 3, courseName: 'Kem chống nắng DailyShield', dropOutPercent: 0 },
+  { courseId: 4, courseName: 'Toner dịu nhẹ PureCare', dropOutPercent: 0 },
+  { courseId: 5, courseName: 'Mặt nạ đất sét GreenTea', dropOutPercent: 0 },
+  { courseId: 6, courseName: 'Sữa rửa mặt Herbal Clean', dropOutPercent: 2 },
+  { courseId: 7, courseName: 'Kem dưỡng ẩm DeepHydra', dropOutPercent: 0 },
+  { courseId: 8, courseName: 'Phấn phủ Silky Powder', dropOutPercent: 0 },
+  { courseId: 9, courseName: 'Sữa tắm Relax Lavender', dropOutPercent: 0 },
+  { courseId: 10, courseName: 'Dầu gội Organic HairCare', dropOutPercent: 45 },
+  { courseId: 11, courseName: 'Tinh chất trị mụn AcneX', dropOutPercent: 30 },
+  { courseId: 12, courseName: 'Nước hoa mini Passion Bloom', dropOutPercent: 1 },
+  { courseId: 13, courseName: 'Kem nền Natural Glow', dropOutPercent: 10 },
+  { courseId: 14, courseName: 'Son dưỡng LipCare Pinky', dropOutPercent: 0 },
+  { courseId: 15, courseName: 'Sáp khử mùi FreshFeel', dropOutPercent: 0 },
+  { courseId: 16, courseName: 'Tẩy tế bào chết BodyScrub Coffee', dropOutPercent: 0 }
+]
+;
 
 interface ChartTooltipProps {
     label: string;
@@ -34,7 +35,7 @@ function ChartTooltip({ label, payload }: ChartTooltipProps) {
             </Text>
             {payload.map((item: any) => (
                 <Text key={item.name} c={"black"} fz="sm">
-                    Tỉ lệ vắng: {item.value}%
+                    Cảnh báo tồn kho thấp: {item.value}%
                 </Text>
             ))}
         </Paper>
@@ -46,7 +47,7 @@ export default function HBarChart_CourseDropOutPercentage() {
 
     return (
         <Group>
-            <Text mb={"20"}>Biểu đồ theo dõi nguy cơ bỏ học</Text>
+            <Text mb={"20"}>Danh sách sản phẩm sắp hết hàng</Text>
             <BarChart
                 h={800}
                 w={"96%"}
@@ -69,8 +70,8 @@ export default function HBarChart_CourseDropOutPercentage() {
                 }}
                 maxBarWidth={20}
                 tickLine="x"
-                yAxisLabel="Danh sách lớp"
-                xAxisLabel="Tỉ lệ vắng (%)"
+                yAxisLabel="Danh sách sản phẩm"
+                xAxisLabel="Cảnh báo tồn kho thấp"
             />
         </Group>
     );
