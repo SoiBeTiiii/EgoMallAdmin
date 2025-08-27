@@ -1,7 +1,6 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "@mantine/form";
 import {
-  MyActionIconUpdate,
   MyCheckbox,
   MySelect,
   MyTextArea,
@@ -10,7 +9,10 @@ import {
 import { Button, Group, Paper, Title, Box } from "@mantine/core";
 import baseAxios from "@/api/baseAxios";
 import { useQuery } from "@tanstack/react-query";
+import slugify from "slugify";
 import ImageUploaderBox from "@/components/ImageUploaderBox/products/ImageUploaderBox";
+import ProductVariantsForm from "@/components/ProductVariantsForm";
+import MyActionIconUpdate from "@/components/ActionIcons/ActionIconCRUD/MyActionIconUpdate";
 
 interface Images {
   url: string | File;
@@ -36,9 +38,23 @@ interface Variant {
   sale_price: number;
   quantity: number;
   is_active: boolean;
-  options: VariantOption[];
+  option_transform?: {
+    name: string;
+    value: string;
+  }[];
+  options: {
+    id: number;
+    name: string;
+    value: string;
+  }[];
   images: Images[];
 }
+
+type OptionSelected = {
+  id: number;
+  name: string;
+  values: string[];
+};
 
 interface ProductUpdate {
   id?: number;
@@ -54,19 +70,25 @@ interface ProductUpdate {
   created_at: string;
   updated_at: string;
   variants: Variant[];
+  option_selecteds?: OptionSelected[];
 }
 
-const flattenCategories = (categories: any[], level = 0): { value: string; label: string }[] => {
+const flattenCategories = (categories: any[], level = 0, seen = new Set<string>()): { value: string; label: string }[] => {
   let result: { value: string; label: string }[] = [];
   categories.forEach((cat) => {
-    const indent = "— ".repeat(level);
-    result.push({ value: cat.id.toString(), label: `${indent}${cat.name}` });
+    const val = cat.id.toString();
+    if (!seen.has(val)) {
+      seen.add(val);
+      const indent = "— ".repeat(level);
+      result.push({ value: val, label: `${indent}${cat.name}` });
+    }
     if (cat.children?.length > 0) {
-      result = result.concat(flattenCategories(cat.children, level + 1));
+      result = result.concat(flattenCategories(cat.children, level + 1, seen));
     }
   });
   return result;
 };
+
 
 export default function F_kep33um7fa_Update({ values }: { values: ProductUpdate }) {
   const form = useForm<ProductUpdate>({
@@ -74,15 +96,53 @@ export default function F_kep33um7fa_Update({ values }: { values: ProductUpdate 
       ...values,
       category: values.category.toString() ?? "",
       brand: values.brand?.toString() ?? "",
-      variants: values.variants?.map((variant) => ({
+      type_skin: values.type_skin ?? "",       // thêm cái này
+      description: values.description ?? "",   // thêm cái này
+      image: values.image ?? "",               // thêm cái này
+      name: values.name ?? "",                 // thêm cái này
+      slug: values.slug ?? "",                 // thêm cái này
+      variants: values.variants?.map((variant) => {
+      const transformedOptions: VariantOption[] =
+        variant.option_transform?.map(({ name, value }) => {
+          const optionDef = values.option_selecteds?.find((opt) => opt.name === name);
+          return {
+            id: optionDef?.id ?? 0,
+            name,
+            value,
+          };
+        }) ?? [];
+
+      return {
         ...variant,
         sku: variant.sku?.toString() ?? "",
         images: variant.images ?? [],
-        options: variant.options ?? [],
-      })) ?? [],
+        options: transformedOptions,
+      };
+    }) ?? [],
     },
     validate: {},
   });
+const leafCategories = (categories: any[]): { value: string; label: string }[] => {
+  const result: { value: string; label: string }[] = [];
+  const seen = new Set<string>();
+
+  const traverse = (cats: any[]) => {
+    cats.forEach((cat) => {
+      if (cat.children?.length > 0) {
+        traverse(cat.children);
+      } else {
+        const val = cat.id.toString();
+        if (!seen.has(val)) {
+          seen.add(val);
+          result.push({ value: val, label: cat.name });
+        }
+      }
+    });
+  };
+
+  traverse(categories);
+  return result;
+};
 
   const { data: brandOptions, isLoading: isLoadingBrands } = useQuery({
     queryKey: ["F_kep33um7fa_Update_brands"],
@@ -104,9 +164,10 @@ export default function F_kep33um7fa_Update({ values }: { values: ProductUpdate 
   });
 
   const categoryOptions = useMemo(() => {
-    if (!categoryOptionsRaw) return [];
-    return flattenCategories(categoryOptionsRaw);
-  }, [categoryOptionsRaw]);
+  if (!categoryOptionsRaw) return [];
+  return leafCategories(categoryOptionsRaw);
+}, [categoryOptionsRaw]);
+
 
   const selectedCategory = useMemo(() => {
     const selectedCatId = parseInt(form.values.category);
@@ -127,15 +188,23 @@ export default function F_kep33um7fa_Update({ values }: { values: ProductUpdate 
     return categoryOptions.find((cat) => cat.value === form.values.category)?.value ?? "";
   }, [categoryOptions, form.values.category]);
 
+  useEffect(() => {
+      const name = form.values.name.trim();
+      const generatedSlug = name ? slugify(name, { lower: true, strict: true }) : "";
+      if (form.values.slug !== generatedSlug) {
+        form.setFieldValue("slug", generatedSlug);
+      }
+    }, [form,form.values.name])
+
   return (
     <MyActionIconUpdate
       modalSize={"50%"}
       form={form}
       onSubmit={async (values) => {
+        const {brand,category,option_selecteds, created_at, updated_at, ...rest} = values
         const payload = {
-          ...values,
+          ...rest,
           brand_id: parseInt(values.brand),
-          brand: undefined,
           variants: values.variants.map((v) => ({
             id: v.id,
             sku: v.sku,
@@ -147,7 +216,25 @@ export default function F_kep33um7fa_Update({ values }: { values: ProductUpdate 
             options: Object.fromEntries(v.options.map((opt) => [opt.id, opt.value])),
           })),
         };
-        return await baseAxios.put(`/products/${values.slug}`, payload);
+        const res = await baseAxios.put(`/products/${values.id}`, payload);
+        const updatedVariants = res.data?.data?.variants || [];
+        const optionSelectedMatch = res.data?.data?.option_selecteds || [];
+        const transformed = updatedVariants.map((variant: Variant) => ({
+          ...variant,
+          options: (variant.option_transform || []).map((opt: any) => {
+            const match = optionSelectedMatch.find((o: any) => o.name === opt.name);
+            return {
+              id: match?.id || 0,
+              name: opt.name,
+              value: opt.value,
+            };
+          }),
+          images: variant.images || [],
+        }));
+
+        form.setFieldValue("variants", transformed);
+
+        return res
       }}
     >
       <MyTextInput label="Tên" required {...form.getInputProps("name")} />
@@ -200,135 +287,29 @@ export default function F_kep33um7fa_Update({ values }: { values: ProductUpdate 
         Danh sách biến thể
       </Title>
 
-      {form.values.variants.map((variant, index) => (
-        <Paper key={index} withBorder p="md" radius="md" mb="md">
-          <Group mb="sm">
-            <Title order={5}>Biến thể #{index + 1}</Title>
-            <Button
-              color="red"
-              variant="outline"
-              size="xs"
-              onClick={() => form.removeListItem("variants", index)}
-            >
-              Xoá
-            </Button>
-          </Group>
-
-          <Group grow>
-            <MyTextInput
-              label="SKU"
-              type="number"
-              {...form.getInputProps(`variants.${index}.sku`)}
-            />
-            <MyTextInput
-              label="Giá"
-              type="number"
-              {...form.getInputProps(`variants.${index}.price`)}
-            />
-            <MyTextInput
-              label="Giá sale"
-              type="number"
-              {...form.getInputProps(`variants.${index}.sale_price`)}
-            />
-          </Group>
-
-          <Group grow mt="sm">
-            <MyTextInput
-              label="Số lượng"
-              type="number"
-              {...form.getInputProps(`variants.${index}.quantity`)}
-            />
-            <MyCheckbox
-              label="Hoạt động"
-              {...form.getInputProps(`variants.${index}.is_active`, { type: "checkbox" })}
-            />
-          </Group>
-
-          {variant.options?.map((opt, optIdx) => (
-            <MyTextInput
-              key={opt.id}
-              label={opt.name}
-              placeholder={`Nhập ${opt.name.toLowerCase()}`}
-              value={opt.value}
-              onChange={(event) => {
-                const newVariants = [...form.values.variants];
-                newVariants[index].options[optIdx].value = event.currentTarget.value;
-                form.setFieldValue("variants", newVariants);
-              }}
-            />
-          ))}
-
-          <Title order={6} mt="sm" mb="xs">
-            Ảnh biến thể
-          </Title>
-          <Group wrap="wrap" gap="md">
-            {variant.images.map((img, imgIdx) => (
-              <ImageUploaderBox
-                key={imgIdx}
-                img={img}
-                imgIdx={imgIdx}
-                label={`Ảnh biến thể #${imgIdx + 1}`}
-                uploadToken={`${process.env.NEXT_PUBLIC_UPLOAD_TOKEN}`}
-                onChange={(val) => {
-                  const newVariants = [...form.values.variants];
-                  newVariants[index].images[imgIdx] = { ...newVariants[index].images[imgIdx] ,url: val };
-                  form.setFieldValue("variants", newVariants);
-                }}
-                onRemove={() => {
-                  const newVariants = [...form.values.variants];
-                  newVariants[index].images.splice(imgIdx, 1);
-                  form.setFieldValue("variants", newVariants);
-                }}
-              />
-            ))}
-          </Group>
-
-          <Button
-          size="xs"
-          mt="sm"
-          onClick={() => {
-            const newVariants = [...form.values.variants];
-            newVariants[index].images.push({ url: "" });
-            form.setFieldValue("variants", newVariants);
-          }}
-        >
-          + Thêm ảnh
-        </Button>
-        </Paper>
-      ))}
-
-      <Button
-        fullWidth
-        variant="light"
-        mt="sm"
-        onClick={() => {
-          if (!selectedCategory) return;
-
-          // Mỗi option của danh mục sẽ tạo ra 1 biến thể riêng biệt
-          const newVariants = selectedCategory.options.map((opt) => ({
-            sku: "",
-            price: 0,
-            sale_price: 0,
-            quantity: 0,
-            is_active: true,
-            images: [{ url: "" }],
-            options: [
-              {
-                id: opt.id,
-                name: opt.name,
-                value: "",
-              },
-            ],
+      <ProductVariantsForm
+        defaultVariants={form.values.variants.map((v) => ({
+          ...v,
+          options: Object.fromEntries(v.options.map((opt) => [opt.id, opt.value])),
+        }))}
+        options={selectedCategory?.options || []}
+        onChange={(newVariants) => {
+          const transformed = newVariants.map((v) => ({
+            ...v,
+            id: v.id,
+            options: Object.entries(v.options).map(([id, value]) => {
+              const optionDef = selectedCategory?.options.find((opt) => opt.id.toString() === id.toString());
+              return {
+                id: Number(id),
+                name: optionDef?.name || "",
+                value,
+              };
+            }),
           }));
-
-          // Thêm từng biến thể vào form
-          newVariants.forEach((variant) => {
-            form.insertListItem("variants", variant);
-          });
+          form.setFieldValue("variants", transformed);
         }}
-      >
-        + Thêm biến thể
-      </Button>
+        initialMode="edit"
+/>
 
     </MyActionIconUpdate>
   );

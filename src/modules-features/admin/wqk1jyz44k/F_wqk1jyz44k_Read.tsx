@@ -3,15 +3,17 @@ import { Button, Fieldset, Group } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconTrash } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
-import { AQButtonCreateByImportFile, AQButtonExportData, MyCenterFull, MyDataTable, MyFlexColumn } from "aq-fe-framework/components";
+import { AQButtonCreateByImportFile, MyCenterFull, MyDataTable, MyFlexColumn } from "aq-fe-framework/components";
 import { MRT_ColumnDef } from "mantine-react-table";
 import { use, useMemo } from "react";
 import F_wqk1jyz44k_Create from "./F_wqk1jyz44k_Create";
 import F_wqk1jyz44k_Update from "./F_wqk1jyz44k_Update";
 import F_wqk1jyz44k_Delete from "./F_wqk1jyz44k_Delete";
+import baseAxios from "@/api/baseAxios";
+import AQButtonExportData from "@/components/Buttons/ButtonCRUD/AQButtonExportData";
 
 export interface I_wqk1jyz44k_Read {
-  id?: number;
+  id: number;
   code: string;
   description: string;
   discount_type: string; // Có thể dùng enum nếu bạn muốn
@@ -31,72 +33,10 @@ export default function I_wqk1jyz44k_Read() {
     const AllQuery = useQuery<I_wqk1jyz44k_Read[]>({
         queryKey: ["F_wqk1jyz44k_Read"],
         queryFn: async () => 
-        [
-            {
-                id: 1,
-                code: "SUMMER2025",
-                description: "Giảm 10% cho đơn hàng hè 2025",
-                discount_type: "percentage",
-                discount_value: 10,
-                min_order_value: 500000,
-                max_discount: 100000,
-                usage_limit: 100,
-                discount_limit: 1,
-                start_date: "2025-07-01",
-                end_date: "2025-07-31",
-                status: true,
-                created_at: "2025-06-25T10:00:00Z",
-                updated_at: "2025-06-25T10:00:00Z"
-            },
-            {
-                id: 2,
-                code: "FREESHIP50K",
-                description: "Giảm 50,000đ cho đơn từ 300k",
-                discount_type: "fixed",
-                discount_value: 50000,
-                min_order_value: 300000,
-                max_discount: 50000,
-                usage_limit: 500,
-                discount_limit: 2,
-                start_date: "2025-07-01",
-                end_date: "2025-08-01",
-                status: true,
-                created_at: "2025-06-26T12:00:00Z",
-                updated_at: "2025-06-26T12:00:00Z"
-            },
-            {
-                id: 3,
-                code: "NEWUSER2025",
-                description: "Ưu đãi cho khách hàng mới",
-                discount_type: "percentage",
-                discount_value: 15,
-                min_order_value: 200000,
-                max_discount: 80000,
-                usage_limit: 300,
-                discount_limit: 1,
-                start_date: "2025-07-01",
-                end_date: "2025-12-31",
-                status: true,
-                created_at: "2025-06-27T08:30:00Z",
-                updated_at: "2025-06-27T08:30:00Z"
-            },
-            {
-                id: 4,
-                code: "BLACKFRIDAY",
-                description: "Black Friday - giảm khủng 20%",
-                discount_type: "percentage",
-                discount_value: 20,
-                min_order_value: 1000000,
-                max_discount: 200000,
-                usage_limit: 1000,
-                discount_limit: 3,
-                start_date: "2025-11-25",
-                end_date: "2025-11-30",
-                status: false,
-                created_at: "2025-06-28T09:00:00Z",
-                updated_at: "2025-06-28T09:00:00Z"
-            }
-        ]
+        {
+            const result = await baseAxios.get("/coupons");
+            return result.data.data;
+        }
     });
     const exportConfig = {
        fields: [
@@ -210,7 +150,6 @@ export default function I_wqk1jyz44k_Read() {
                         data={AllQuery.data!}
                         exportConfig={exportConfig}
                     />
-                    
                         </Group>
                     </>
                 );
@@ -218,8 +157,8 @@ export default function I_wqk1jyz44k_Read() {
              columns={columns} 
                                 renderRowActions={({ row }) => (
                                     <MyCenterFull>
-                                        <F_wqk1jyz44k_Update values={row.original} />
-                                        <F_wqk1jyz44k_Delete id={row.id} />
+                                        <F_wqk1jyz44k_Update data={row.original} />
+                                        <F_wqk1jyz44k_Delete id={row.original.id} />
                                     </MyCenterFull>
                                 )}
                                 

@@ -263,7 +263,7 @@ export function BasicAppShell({
                   { value: "2", label: "Năm học 2024 - 2025 Học kỳ 1" },
                 ]}
               /> */}
-              <MySwitchTheme />
+              <MySwitchTheme /> 
             </Group>
           </Group>
         ) : (

@@ -1,9 +1,8 @@
 import { MyDataTable } from "@/components/DataDisplay/DataTable/MyDataTable";
 import MyFlexColumn from "@/components/Layouts/FlexColumn/MyFlexColumn";
-import { Fieldset, Group } from "@mantine/core";
+import { Button, Collapse, Fieldset, Group, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { MRT_ColumnDef } from "mantine-react-table";
 import { useMemo, useState } from "react";
 import AQButtonCreateByImportFile from "@/components/Buttons/ButtonCRUD/AQButtonCreateByImportFile";
@@ -14,19 +13,19 @@ import baseAxios from "@/api/baseAxios";
 import F_kep33um7fa_Delete from "./F_kep33um7fa_Delete";
 import F_kep33um7fa_Update from "./F_kep33um7fa_Update";
 import VariantImageList from "@/components/VariantImageList/VariantImageList";
-// import F_kep33um7fa_Delete from "../kep33um7fa/F_kep33um7fa_Delete";
+import DescriptionCell from "@/components/Description/DescriptionCell";
 
 export interface F_kep33um7fa_Read {
-  variants: never[];
+  variants: any[];
   id: number;
   name: string;
   slug: string;
-  category: number;
+  category: string; // sửa thành id thay vì string
   is_active: boolean;
-  brand: number;
+  brand: string;    // sửa thành id thay vì string
   type_skin: string;
   description: string;
-  image: { url: string }[];
+  image: string;
   deleted_at: string;
   created_at: string;
   updated_at: string;
@@ -38,18 +37,20 @@ export default function F_kep33um7fa_Read() {
     initialValues: {
       importedData: []
     },
-  })
+  });
+
   const AllProductQuery = useQuery({
     queryKey: ["F_kep33um7fa_Read"],
     queryFn: async () => {
       const res = await baseAxios.get("/products");
       return res.data.data.map((p: any) => ({
         ...p,
-        brand: p.brand,
-        category: p.category
+        brand: p.brand?.id,       // chỉ lấy id
+        category: p.category?.id, // chỉ lấy id
       }));
     }
   });
+
   const categoryQuery = useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
@@ -65,14 +66,31 @@ export default function F_kep33um7fa_Read() {
       return res.data.data;
     }
   });
+
   function normalizeImages(input: unknown): { url: string }[] {
-  if (Array.isArray(input)) return input;
-  if (typeof input === "string" && input.length > 0) return [{ url: input }];
-  if (input && typeof input === "object" && "url" in input) return [input as { url: string }];
-  return [];
-}
+    if (Array.isArray(input)) return input as { url: string }[];
+    if (typeof input === "string" && input.length > 0) return [{ url: input }];
+    if (input && typeof input === "object" && "url" in input) return [input as { url: string }];
+    return [];
+  }
 
+  const flattenCategories = (categories: any[]): any[] => {
+    const result: any[] = [];
+    const recurse = (cats: any[]) => {
+      for (const cat of cats) {
+        result.push(cat);
+        if (cat.children && cat.children.length > 0) {
+          recurse(cat.children);
+        }
+      }
+    };
+    recurse(categories);
+    return result;
+  };
 
+  const allCategories = useMemo(() => {
+    return flattenCategories(categoryQuery.data || []);
+  }, [categoryQuery.data]);
 
   const columns = useMemo<MRT_ColumnDef<F_kep33um7fa_Read>[]>(() => {
     return [
@@ -87,7 +105,7 @@ export default function F_kep33um7fa_Read() {
       {
         header: "Danh mục",
         accessorFn: (row) => {
-          const category = categoryQuery.data?.find((c: { id: number; }) => c.id === row.category);
+          const category = allCategories.find((c: { id: number }) => c.id === Number(row.category));
           return category?.name || "Không rõ";
         }
       },
@@ -98,7 +116,7 @@ export default function F_kep33um7fa_Read() {
       {
         header: "Thương hiệu",
         accessorFn: (row) => {
-          const brand = brandQuery.data?.find((b: { id: any; }) => Number(b.id) === Number(row.brand));
+          const brand = brandQuery.data?.find((b: { id: any }) => Number(b.id) === Number(row.brand));
           return brand?.name || "Không rõ";
         }
       },
@@ -108,15 +126,18 @@ export default function F_kep33um7fa_Read() {
       },
       {
         header: "Mô tả",
-        accessorKey: "description"
+        accessorKey: "description",
+        Cell: ({ row }) => (
+          <DescriptionCell description={row.original.description} />
+        ),
       },
       {
         header: "Hình ảnh",
-      Cell: ({ row }) => {
-  const images = normalizeImages(row.original.image);
-  return <VariantImageList images={images} />;
-}},
-
+        Cell: ({ row }) => {
+          const images = normalizeImages(row.original.image);
+          return <VariantImageList images={images} />;
+        }
+      },
       {
         header: "Ngày tạo",
         accessorKey: "created_at"
@@ -132,7 +153,7 @@ export default function F_kep33um7fa_Read() {
     {
       header: "Tùy chọn",
       accessorFn: (row) =>
-        row.options?.map((opt: any) => `${opt.name}: ${opt.value}`).join(", ") ?? "Không có",
+        row.option_transform?.map((opt: any) => `${opt.name}: ${opt.value}`).join(", ") ?? "Không có",
     },
     {
       header: "Trạng thái",
@@ -143,7 +164,6 @@ export default function F_kep33um7fa_Read() {
       Cell: ({ row }) => <VariantImageList images={row.original.images || []} />,
     },
   ], []);
-
 
   const exportConfig = {
     fields: [
@@ -156,16 +176,14 @@ export default function F_kep33um7fa_Read() {
       { fieldName: "description", header: "Mô tả" },
       { fieldName: "image", header: "Hình ảnh" },
       { fieldName: "created_at", header: "Ngày tạo" },
-      // { fieldName: "updated_at", header: "Ngày cập nhật" },
-      // { fieldName: "deleted_at", header: "Ngày xóa" },
     ],
   };
+
   if (AllProductQuery.isLoading) return "Đang tải dữ liệu..."
   if (AllProductQuery.isError) return "Có lỗi xảy ra!"
   if (AllProductQuery.isLoading || categoryQuery.isLoading || brandQuery.isLoading) {
     return "Đang tải dữ liệu...";
   }
-
   if (AllProductQuery.isError || categoryQuery.isError || brandQuery.isError) {
     return "Có lỗi xảy ra!";
   }
@@ -178,17 +196,18 @@ export default function F_kep33um7fa_Read() {
           enableRowNumbers={true}
           renderTopToolbarCustomActions={({ table }) => {
             return (
-              <>
-                <Group>
-                  <F_kep33um7fa_Create />
-                  <AQButtonCreateByImportFile setImportedData={setImportData} form={form_multiple} onSubmit={async () => {
-                    console.log(form_multiple.values);
-                  }}>s</AQButtonCreateByImportFile>
-                  <AQButtonExportData isAllData={true}
-                    objectName="QlSanPham"
-                    data={AllProductQuery.data || []} exportConfig={exportConfig} />
-                </Group>
-              </>
+              <Group>
+                <F_kep33um7fa_Create />
+                <AQButtonCreateByImportFile setImportedData={setImportData} form={form_multiple} onSubmit={async () => {
+                  console.log(form_multiple.values);
+                }}>s</AQButtonCreateByImportFile>
+                <AQButtonExportData
+                  isAllData={true}
+                  objectName="QlSanPham"
+                  data={AllProductQuery.data || []}
+                  exportConfig={exportConfig}
+                />
+              </Group>
             );
           }}
           columns={columns}
@@ -206,15 +225,12 @@ export default function F_kep33um7fa_Read() {
               />
             );
           }}
-
-          renderRowActions={({ row }) => {
-            return (
-              <MyCenterFull>
-                <F_kep33um7fa_Update values={row.original} />
-                <F_kep33um7fa_Delete slug={row.original.slug} />
-              </MyCenterFull>
-            )
-          }}
+          renderRowActions={({ row }) => (
+            <MyCenterFull>
+              <F_kep33um7fa_Update values={row.original} />
+              <F_kep33um7fa_Delete slug={row.original.slug} />
+            </MyCenterFull>
+          )}
         />
       </MyFlexColumn>
     </Fieldset>

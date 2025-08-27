@@ -110,7 +110,7 @@ export default function F_p1x0zur5dt_Read() {
                     renderRowActions={({ row }) => (
                         <MyCenterFull>
                             <F_p1x0zur5dt_Update values={row.original} />
-                            <F_p1x0zur5dt_Delete id={row.id} />
+                            <F_p1x0zur5dt_Delete id={row.original.id} />
                         </MyCenterFull>
                     )}
                     />

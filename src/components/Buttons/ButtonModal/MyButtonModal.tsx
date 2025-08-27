@@ -114,6 +114,23 @@ export function MyButtonModal({
             </>
         );
     }
+    if (crudType == "check") {
+        return (
+            <>
+                <Button onClick={disclosure?.[1].open} color="indigo" {...rest}>
+                    {label ? label : `Chi tiết ${objectNameLower}`}
+                </Button>
+                <Modal
+                    fullScreen={fullScreen}
+                    size={modalSize}
+                    title={title ? title : `Chi tiết ${objectNameLower}`}
+                    opened={disclosure?.[0]}
+                    onClose={disclosure[1].close}>
+                    <MyFlexColumn>{children}</MyFlexColumn>
+                </Modal>
+            </>
+        );
+    }
     // if (crudType == "register") {
     //     return (
     //         <>

@@ -2,8 +2,7 @@
 import AQButtonCreateByImportFile from "@/components/Buttons/ButtonCRUD/AQButtonCreateByImportFile";
 import MyCenterFull from "@/components/CenterFull/MyCenterFull";
 import { MyDataTable } from "@/components/DataDisplay/DataTable/MyDataTable";
-import MyFlexColumn from "@/components/Layouts/FlexColumn/MyFlexColumn";
-import { Box, Group, Paper, Popover, Stack, Text } from "@mantine/core";
+import { Box, Button, Grid, Group, Paper, Popover, Stack, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useQuery } from "@tanstack/react-query";
 import { MRT_ColumnDef } from "mantine-react-table";
@@ -13,6 +12,11 @@ import F_am7u4vy7yv_Update from "./F_am7u4vy7yv_Update";
 import F_am7u4vy7yv_Create from "./F_am7u4vy7yv_Create";
 import I_am7u4vy7yv_parent from "./F_am7u7vy7yv_parent";
 import baseAxios from "@/api/baseAxios";
+import VariantImageList from "@/components/VariantImageList/VariantImageList";
+import DescriptionCell from "@/components/Description/DescriptionCell";
+import MyFlexColumn from "@/components/Layouts/FlexColumn/MyFlexColumn";
+import { MyButtonModal } from "@/components/Buttons/ButtonModal/MyButtonModal";
+import { useDisclosure } from "@mantine/hooks";
 
 interface ProductOption {
   id: number;
@@ -36,6 +40,7 @@ interface I_am7u4vy7yv_Read {
 
 
 export default function F_am7u4vy7yv_Read() {
+  const [categoryType, setCategoryType] = useState<"blog" | "product">("product");
   const [importData, setImportData] = useState(false);
   const form_multiple = useForm<any>({
     initialValues: {
@@ -59,21 +64,40 @@ export default function F_am7u4vy7yv_Read() {
     },
   });
 
+  function normalizeImages(input: unknown): { url: string }[] {
+    if (Array.isArray(input)) return input;
+    if (typeof input === "string" && input.length > 0) return [{ url: input }];
+    if (input && typeof input === "object" && "url" in input) return [input as { url: string }];
+    return [];
+  }
+  
+    const disc = useDisclosure(false);
+
   // Query to fetch the mock data
-  const AllUserQuery = useQuery<I_am7u4vy7yv_Read[]>({
-    queryKey: ["F_am7u4vy7yv_Read"],
+    const AllUserQuery = useQuery<I_am7u4vy7yv_Read[]>({
+    queryKey: ["F_am7u4vy7yv_Read", categoryType],
     queryFn: async () => {
-      const result = await baseAxios.get("/categories");
-      return result.data.data;
+      const result = await baseAxios.get(`/categories?type=${categoryType}`);
+      // chỉ lấy parent
+      return result.data.data.filter((cat: any) => cat.parent_id === null);
     },
   });
+
 
   const columns = useMemo<MRT_ColumnDef<I_am7u4vy7yv_Read>[]>(() => [
     { header: "Tên danh mục", accessorKey: "name" },
     { header: "Slug", accessorKey: "slug" },
-    { header: "Mô tả", accessorKey: "description" },
-    { header: "Trạng thái", accessorKey: "is_active" },
-    { header: "Danh mục nổi bật", accessorKey: "is_featured" },
+    { header: "Mô tả", accessorKey: "description", Cell: ({ row }) => <DescriptionCell description={row.original.description} /> },
+    {
+      header: "Ảnh danh mục",
+      Cell: ({ row }) => {
+        const images = normalizeImages(row.original.thumbnail);
+        return <VariantImageList images={images} />;
+
+      }
+    },
+    { header: "Trạng thái", accessorFn: (row) => (row.is_active ? "Đang hoạt động" : "Dừng hoạt động") },
+    { header: "Danh mục nổi bật", accessorFn: (row) => (row.is_featured ? "Danh mục nổi bật" : "Không nổi bật") },
     {
       header: "Options",
       accessorKey: "options",
@@ -103,14 +127,11 @@ export default function F_am7u4vy7yv_Read() {
       },
     },
     {
-      header: "children",
+      header: "Children",
       Cell: ({ row }) => {
-        return <I_am7u4vy7yv_parent id={row.original.id} />
-      }
+        return <I_am7u4vy7yv_parent slug={row.original.slug} />;
+      },
     },
-
-
-    { header: "Kiểu danh mục", accessorKey: "type" },
     { header: "Ngày tạo", accessorKey: "created_at" },
     { header: "Ngày cập nhật", accessorKey: "update_at" },
   ], []);
@@ -121,6 +142,11 @@ export default function F_am7u4vy7yv_Read() {
   return (
     <MyFlexColumn>
       <Text>Quản lí danh mục</Text>
+      <Grid columns={2}>
+        <Button style={{ margin: "10px", backgroundColor: "green" }} onClick={() => setCategoryType("product")}>product</Button>
+        <Button style={{ margin: "10px", backgroundColor: "blue" }} onClick={() => setCategoryType("blog")}>blog</Button>
+
+      </Grid>
       <MyDataTable
         exportAble
         enableRowSelection={true}
@@ -145,7 +171,7 @@ export default function F_am7u4vy7yv_Read() {
 
             <MyCenterFull>
               <F_am7u4vy7yv_Update values={row.original} />
-              <F_am7u4vy7yv_Delete id={row.original.id!} />
+              <F_am7u4vy7yv_Delete slug={row.original.slug!} />
             </MyCenterFull>
           )
         }}
@@ -153,98 +179,3 @@ export default function F_am7u4vy7yv_Read() {
     </MyFlexColumn>
   );
 }
-
-// const data: I_am7u4vy7yv_Read[] = [
-//   {
-//     id: 1,
-//     name: "Chăm Sóc Da",
-//     slug: "cham-soc-da",
-//     description: "Danh mục các sản phẩm chăm sóc da như sữa rửa mặt, toner, serum, kem dưỡng.",
-//     thumbnail: "https://example.com/images/cham-soc-da.jpg",
-//     is_active: true,
-//     is_featured: true,
-//     type: "cosmetic",
-//     options: [
-//       { id: 1, name: "Dung tích" },
-//       { id: 2, name: "Hương thơm" }
-//     ],
-//     children: [
-//       {
-//         id: 101,
-//         name: "Sữa Rửa Mặt Dịu Nhẹ",
-//         slug: "sua-rua-mat-diu-nhe",
-//         description: "Làm sạch da mà không gây khô.",
-//         thumbnail: "",
-//         is_active: true,
-//         is_featured: false,
-//         type: "cosmetic",
-//         options: [{ id: 1, name: "Dung tích" }],
-//         children: [],
-//         created_at: "2025-02-01T08:00:00Z",
-//         updated_at: "2025-05-01T09:00:00Z"
-//       },
-//       {
-//         id: 102,
-//         name: "Serum Vitamin C",
-//         slug: "serum-vitamin-c",
-//         description: "Giúp sáng da và mờ thâm.",
-//         thumbnail: "",
-//         is_active: true,
-//         is_featured: true,
-//         type: "cosmetic",
-//         options: [{ id: 2, name: "Hương thơm" }],
-//         children: [],
-//         created_at: "2025-02-02T08:00:00Z",
-//         updated_at: "2025-05-01T09:10:00Z"
-//       }
-//     ],
-//     created_at: "2025-01-01T08:00:00Z",
-//     updated_at: "2025-05-01T09:30:00Z"
-//   },
-//   {
-//     id: 2,
-//     name: "Trang Điểm",
-//     slug: "trang-diem",
-//     description: "Danh mục sản phẩm trang điểm như kem nền, son môi, phấn phủ.",
-//     thumbnail: "https://example.com/images/trang-diem.jpg",
-//     is_active: true,
-//     is_featured: true,
-//     type: "cosmetic",
-//     options: [
-//       { id: 3, name: "Loại da phù hợp" },
-//       { id: 4, name: "Tông màu" }
-//     ],
-//     children: [
-//       {
-//         id: 201,
-//         name: "Kem Nền Mịn Lì",
-//         slug: "kem-nen-min-li",
-//         description: "Giữ lớp nền hoàn hảo cả ngày.",
-//         thumbnail: "",
-//         is_active: true,
-//         is_featured: true,
-//         type: "cosmetic",
-//         options: [{ id: 4, name: "Tông màu" }],
-//         children: [],
-//         created_at: "2025-02-05T09:00:00Z",
-//         updated_at: "2025-05-05T09:00:00Z"
-//       },
-//       {
-//         id: 202,
-//         name: "Phấn Phủ Kiềm Dầu",
-//         slug: "phan-phu-kiem-dau",
-//         description: "Hạn chế bóng nhờn suốt 8 giờ.",
-//         thumbnail: "",
-//         is_active: true,
-//         is_featured: false,
-//         type: "cosmetic",
-//         options: [{ id: 3, name: "Loại da phù hợp" }],
-//         children: [],
-//         created_at: "2025-02-06T09:00:00Z",
-//         updated_at: "2025-05-06T09:00:00Z"
-//       }
-//     ],
-//     created_at: "2025-01-05T10:00:00Z",
-//     updated_at: "2025-05-03T11:20:00Z"
-//   }
-// ];

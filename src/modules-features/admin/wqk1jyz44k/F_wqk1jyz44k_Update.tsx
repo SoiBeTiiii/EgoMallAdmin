@@ -8,7 +8,7 @@ import { MyCheckbox, MySelect, MyTextInput } from 'aq-fe-framework/components';
 import { useEffect, useState } from 'react';
 
 interface I_wqk1jyz44k_Update {
-  id?: number;
+  id: number;
   code: string;
   description: string;
   discount_type: string; // Có thể dùng enum nếu bạn muốn
@@ -24,8 +24,7 @@ interface I_wqk1jyz44k_Update {
   updated_at: string; 
 }
 
-export default function F_umg0mq7o3x_Update({data}:{data:I_wqk1jyz44k_Update}) {
-    const [fileData, setFileData] = useState<any[]>([]);
+export default function F_wqk1jyz44k_Update({data}:{data:I_wqk1jyz44k_Update}) {
     
     const form = useForm<I_wqk1jyz44k_Update>({
         initialValues:data,
@@ -34,15 +33,7 @@ export default function F_umg0mq7o3x_Update({data}:{data:I_wqk1jyz44k_Update}) {
         }
     });
 
-    const form_multiple = useForm<any>({
-        initialValues: {
-            importedData: []
-        },
-    });
-
-    useEffect(() => {
-        form_multiple.setValues({ importedData: fileData });
-    }, [fileData]);
+    
     useEffect(() => {
         form.setValues(data);
     }, [data]);

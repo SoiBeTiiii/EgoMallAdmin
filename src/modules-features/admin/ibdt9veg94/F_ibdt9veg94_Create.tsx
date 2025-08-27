@@ -8,15 +8,15 @@ import { useDisclosure } from "@mantine/hooks"
 import { MyButtonCreate, MyTextArea, MyTextInput } from "aq-fe-framework/components"
 import { useState } from "react"
 
-export interface I_ibdt9veg94_Create {
-    id?: number
-    name: string
-    slug: string
-    logo: string
-    description: string
-    is_active: boolean
-    is_featured: boolean
-}
+  export interface I_ibdt9veg94_Create {
+      id?: number
+      name: string
+      slug: string
+      logo: string
+      description: string
+      is_active: boolean
+      is_featured: boolean
+  }
 
 export default function F_ibdt9veg94_Create() {
     const disc = useDisclosure(false)

@@ -1,7 +1,7 @@
 "use client";
 import MyButtonRouterBack from "@/components/Buttons/ButtonRouterBack/MyButtonRouterBack";
 import { Code, Container, Divider, Group, Indicator, Title } from "@mantine/core";
-import { useS_BasicAppShell } from "aq-fe-framework/components";
+import { useStore_BasicAppShell } from "aq-fe-framework/components";
 import { ReactNode } from "react";
 
 interface IPageContent {
@@ -26,21 +26,21 @@ const getStatusColor = (status?: string) => {
 };
 
 // Component riêng cho tiêu đề có trạng thái
-const PageTitle = ({ title, status }: { title: string; status?: string }) => {
-    const color = getStatusColor(status);
-    return (
-        <Indicator label={status} size={16} inline color={color} disabled={!status} pt={6}>
-            <Title>{title}</Title>
-        </Indicator>
-    );
-};
+// const PageTitle = ({ title, status }: { title: string; status?: string }) => {
+//     const color = getStatusColor(status);
+//     return (
+//         <Indicator label={status} size={16} inline color={color} disabled={!status} pt={6}>
+//             <Title>{title}</Title>
+//         </Indicator>
+//     );
+// };
 
 export default function MyPageContent({ leftTopBar, title, canBack = false, rightTopBar, status, children }: IPageContent) {
-    const SidebarStore = useS_BasicAppShell();
+    const SidebarStore = useStore_BasicAppShell();
     const finalTitle = title || SidebarStore.state.title;
     return (
         <Container p={0} fluid>
-            <Group justify="space-between">
+            {/* <Group justify="space-between">
                 <Group>
                     {canBack && <MyButtonRouterBack />}
                     <PageTitle title={finalTitle} status={status} />
@@ -48,7 +48,7 @@ export default function MyPageContent({ leftTopBar, title, canBack = false, righ
                 </Group>
                 <Group>{rightTopBar}<Code color="var(--mantine-color-blue-light)">{SidebarStore.state.menuCode}</Code></Group>
 
-            </Group>
+            </Group> */}
             <Divider />
             {children}
         </Container>

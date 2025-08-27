@@ -3,84 +3,86 @@ import AQButtonCreateByImportFile from "@/components/Buttons/ButtonCRUD/AQButton
 import MyCenterFull from "@/components/CenterFull/MyCenterFull";
 import { MyDataTable } from "@/components/DataDisplay/DataTable/MyDataTable";
 import MyFlexColumn from "@/components/Layouts/FlexColumn/MyFlexColumn";
-import { U0DateToDDMMYYYString } from "@/utils/date";
-import { Group, Text } from "@mantine/core";
+import { Button, Grid, Group, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useQuery } from "@tanstack/react-query";
 import { MRT_ColumnDef } from "mantine-react-table";
 import { useMemo, useState } from "react";
-import F_569re3pt0f_Delete from "./F_569re3pt0f_Delete";
 import F_569re3pt0f_Update from "./F_569re3pt0f_Update";
-import F_569re3pt0f_Create from "./F_569re3pt0f_Create";
 import baseAxios from "@/api/baseAxios";
-
-
-
-
+import VariantImageList from "@/components/VariantImageList/VariantImageList";
+import F_569re3pt0f_Create from "./F_569re3pt0f_Create";
 export interface I_569re3pt0f_Read {
-    id?: number;          // Unique identifier
-    name?: string;        // Course Objective (CO) code
-    email?: string; // Description of the CO
-    password?: string;  // Course name
-    phone?: string;
-    google_id?: string;  // Managing unit
-    facebook_id?: string;
-    address?: string;
-    image?: string;
-    role_id?: string;
-    is_active?: boolean;
-    email_verified_at?: string;
-    otp?: string;
-    otp_expires_at?: string;
-    otp_send_count?: number;
-    otp_sent_at?: string;
-    updated_at?: string;
-    created_at?: string;
+    id: number;
+    name: string;
+    email: string;
+    phone: string;
+    email_verified_at: string; 
+    image: string;
+    role_name: string;
+    is_active: boolean;
+    role: {
+    id: number;
+    name: string;
+    display_name: string;
+  };
+    created_at: string;
+    updated_at: string;
 }
 
 
 export default function F_569re3pt0f_Read() {
+    const [userType, setUserType] = useState<"admins" | "staffs" | "customers">("admins");
+
     const [importData, setImportData] = useState(false);
     const form_multiple = useForm<any>({
         initialValues: {
             importedData: []
         },
     })
-    const form = useForm<I_569re3pt0f_Read>({
-        initialValues: {},
-    });
 
     // Query to fetch the mock data
     const AllUserQuery = useQuery<I_569re3pt0f_Read[]>({
-        queryKey: ["F_569re3pt0f_Read"],
-        queryFn: async () => data,
+        queryKey: ["F_569re3pt0f_Read", userType],
+        queryFn: async () => {
+            const result = await baseAxios.get(`/users/${userType}`);
+            return result.data.data || [];
+        },
     });
+
+    function normalizeImages(input: unknown): { url: string }[] {
+        if (Array.isArray(input)) return input;
+        if (typeof input === "string" && input.length > 0) return [{ url: input }];
+        if (input && typeof input === "object" && "url" in input) return [input as { url: string }];
+        return [];
+    }
 
     const columns = useMemo<MRT_ColumnDef<I_569re3pt0f_Read>[]>(() => [
         { header: "Tên khách hàng", accessorKey: "name" },
-        { header: "Email", accessorKey: "email" },
-        { header: "Mật khẩu", accessorKey: "password" },
         { header: "Số điện thoại", accessorKey: "phone" },
-        { header: "Mã google", accessorKey: "google_id" },
-        { header: "Mã facebook", accessorKey: "facebook_id" },
-        { header: "địa chỉ", accessorKey: "address" },
-        { header: "quyền", accessorKey: "role_id" },
-        { header: "Trang thái", accessorKey: "is_active" },
-        { header: "Ngày xác nhận email", accessorKey: "email_verified_at"},
-        { header: "OTP", accessorKey: "otp" },
-        { header: "Ngày xác nhận OTP", accessorKey: "otp_expires_at" },
-        { header: "Số lần gửi OTP", accessorKey: "otp_send_count" },
-        { header: "Ngày gửi OTP", accessorKey: "otp_sent_at" },
+        { header: "Ngày xác nhận email", accessorKey: "email_verified_at" },
+        {
+            header: "Ảnh đại diện", Cell: ({ row }) => {
+                const images = normalizeImages(row.original.image);
+                return <VariantImageList images={images} />;
+            }
+        },
+        { header: "Trang thái", accessorFn: (row) => row.is_active ? "Hoạt động" : "Khóa" },
+        { header: "Ngày tạo", accessorKey: "created_at" },
+        { header: "Ngày cập nhật", accessorKey: "updated_at" },
     ], []);
-
     if (AllUserQuery.isLoading) return "Loading...";
-
     return (
         <MyFlexColumn>
             <Text>Quản lí tài khoản</Text>
+            <Grid columns={3}>
+                    <Button style={{ margin: "10px", backgroundColor: "green"}} onClick={() => setUserType("admins")}>Get Admin</Button>
+                    <Button style={{ margin: "10px", backgroundColor: "blue"}} onClick={() => setUserType("staffs")}>Get Staff</Button>
+                    <Button style={{ margin: "10px", backgroundColor: "red"}} onClick={() => setUserType("customers")}>Get Customer</Button>
+           
+            </Grid>
             <MyDataTable
                 exportAble
-
                 enableRowSelection={true}
                 enableRowNumbers={true}
                 renderTopToolbarCustomActions={({ table }) => {
@@ -103,7 +105,7 @@ export default function F_569re3pt0f_Read() {
 
                         <MyCenterFull>
                             <F_569re3pt0f_Update values={row.original} />
-                            <F_569re3pt0f_Delete id={row.original.id!} />
+                            {/* <F_569re3pt0f_Delete id={row.original.id!} /> */}
                         </MyCenterFull>
                     )
                 }}
@@ -111,26 +113,3 @@ export default function F_569re3pt0f_Read() {
         </MyFlexColumn>
     );
 }
-
-const data: I_569re3pt0f_Read[] = [
-  {
-    id: 1,
-    name: "Nguyễn Văn A",
-    email: "vana@example.com",
-    phone: "0909123456",
-    role_id: "Admin",
-    is_active: true,
-    email_verified_at: "2025-06-01",
-    otp_send_count: 2,
-  },
-  {
-    id: 2,
-    name: "Trần Thị B",
-    email: "tranb@example.com",
-    phone: "0911222333",
-    role_id: "User",
-    is_active: false,
-    email_verified_at: "2025-06-02",
-    otp_send_count: 5,
-  },
-];

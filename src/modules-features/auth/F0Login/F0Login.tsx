@@ -45,7 +45,7 @@ export default function F0Login() {
         }, {
             onSuccess: (data) => {
                 if (data.isSuccess === false) {
-                    form.setFieldError("account", "Tài khoản không tồn tại!")
+                    form.setFieldError("username", "Tài khoản không tồn tại!")
                     return
                 }
                 if (data.isSuccess == 0) {
@@ -74,7 +74,7 @@ export default function F0Login() {
                     </Anchor>
                 </Text>
             </Flex>
-            <form onSubmit={form.onSubmit(async values => handleSubmit(values.account, values.password))}>
+                    <form onSubmit={form.onSubmit(async values => handleSubmit(values.account, values.password))}>
                 <MyFlexColumn>
                     <TextInput
                         {...form.getInputProps("account")}
@@ -117,12 +117,10 @@ export default function F0Login() {
 }
 
 function useM_Account_Sigin() {
-    const ENDPOINT = process.env.NEXT_PUBLIC_API2 + "/login"
+    const ENDPOINT = process.env.NEXT_PUBLIC_API2 + "login"
     const mutation = useMutation({
-        mutationFn: async (values: { account?: string, password?: string }) => {
-            const result = await axios.post(ENDPOINT, values, {
-                withCredentials: true // 👈 thêm dòng này!
-            })
+        mutationFn: async (values: { account?: string, password?: string  }) => {
+            const result = await axios.post(ENDPOINT, values)
             return result.data
         }
     })

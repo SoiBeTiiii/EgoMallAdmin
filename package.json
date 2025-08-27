@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack -p 3011",
+    "dev": "next dev --turbopack -p 3000",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "debug": "next dev -p 3011",
+    "debug": "next dev -p 3000",
     "interfacegen": "npx ts-node generate-db-json.ts && npx ts-node generate-interfaces.ts"
   },
   "dependencies": {
@@ -28,6 +28,8 @@
     "@mantine/spotlight": "^8.0.0",
     "@mantine/tiptap": "^8.0.0",
     "@mantinex/mantine-logo": "^2.0.0",
+    "@preact/signals": "^2.2.1",
+    "@schedule-x/calendar": "^2.36.0",
     "@schedule-x/event-modal": "^2.12.1",
     "@schedule-x/events-service": "^2.12.1",
     "@schedule-x/react": "^2.12.0",
@@ -65,10 +67,13 @@
     "next": "15.0.3",
     "pako": "^2.1.0",
     "pizzip": "^3.1.7",
-    "react": "19.0.0-rc-66855b96-20241106",
-    "react-dom": "19.0.0-rc-66855b96-20241106",
+    "preact": "^10.26.9",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-toastify": "^11.0.5",
     "recharts": "^2.13.3",
     "sass": "^1.82.0",
+    "slugify": "^1.6.6",
     "tailwind-merge": "^2.5.4",
     "xlsx": "^0.18.5",
     "zustand": "^5.0.1"

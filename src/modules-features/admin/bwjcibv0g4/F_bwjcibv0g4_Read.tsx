@@ -1,7 +1,9 @@
+import baseAxios from "@/api/baseAxios";
 import { MyButton } from "@/components/Buttons/Button/MyButton";
+import AQButtonExportData from "@/components/Buttons/ButtonCRUD/AQButtonExportData";
 import { Group } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
-import { AQButtonExportData, MyCenterFull, MyDataTable } from "aq-fe-framework/components";
+import { MyCenterFull, MyDataTable } from "aq-fe-framework/components";
 import { MRT_ColumnDef } from "mantine-react-table";
 import { useMemo } from "react";
 
@@ -35,90 +37,10 @@ export interface Promotion {
 export default function F_bwjcibv0g4_Read() {
     const AllQuery = useQuery<Promotion[]>({
         queryKey: ["F_bwjcibv0g4_Read"],
-        queryFn: async () => [
-            {
-                id: 1,
-                name: "Mua 2 tặng 1",
-                promotion_type: "buy_get",
-                start_date: "2025-07-20 00:00:00",
-                end_date: "2025-07-25 23:59:59",
-                status: "active",
-                created_at: "2025-07-10T09:00:00.000000Z",
-                updated_at: "2025-07-12T11:00:00.000000Z",
-                gift: {
-                    type: "variant",
-                    parent_id: 10,
-                    variant_id: 101
-                },
-                buy_quantity: 2,
-                get_quantity: 1,
-                applied_products: [
-                    {
-                        type: "variant",
-                        parent_id: 10,
-                        variant_id: 100
-                    },
-                    {
-                        type: "variant",
-                        parent_id: 11,
-                        variant_id: 102
-                    }
-                ]
-            },
-            {
-                id: 2,
-                name: "Mua 3 tặng 2 - Hè 2025",
-                promotion_type: "buy_get",
-                start_date: "2025-08-01 00:00:00",
-                end_date: "2025-08-15 23:59:59",
-                status: "inactive",
-                created_at: "2025-07-13T14:00:00.000000Z",
-                updated_at: "2025-07-13T14:37:20.000000Z",
-                gift: {
-                    type: "variant",
-                    parent_id: 20,
-                    variant_id: 201
-                },
-                buy_quantity: 3,
-                get_quantity: 2,
-                applied_products: [
-                    {
-                        type: "variant",
-                        parent_id: 21,
-                        variant_id: 210
-                    }
-                ]
-            },
-            {
-                id: 3,
-                name: "Khuyến mãi 5 tặng 1 cho sản phẩm mới",
-                promotion_type: "buy_get",
-                start_date: "2025-07-30 00:00:00",
-                end_date: "2025-08-05 00:00:00",
-                status: "active",
-                created_at: "2025-07-15T08:30:00.000000Z",
-                updated_at: "2025-07-15T08:30:00.000000Z",
-                gift: {
-                    type: "variant",
-                    parent_id: 30,
-                    variant_id: 301
-                },
-                buy_quantity: 5,
-                get_quantity: 1,
-                applied_products: [
-                    {
-                        type: "variant",
-                        parent_id: 30,
-                        variant_id: 300
-                    },
-                    {
-                        type: "variant",
-                        parent_id: 31,
-                        variant_id: 302
-                    }
-                ]
-            }
-        ]
+        queryFn: async () => {
+            const res = await baseAxios.get("/promotions");
+            return res.data.data;
+        },
     });
     const exportConfig = {
         fields: [
@@ -242,13 +164,13 @@ export default function F_bwjcibv0g4_Read() {
                         );
                     }}
                      columns={columns} 
-                                        renderRowActions={({ row }) => (
-                                            <MyCenterFull>
-                                                <MyButton>xoá</MyButton>
-                                                {/* <F_wqk1jyz44k_Update values={row.original} />
-                                                <F_wqk1jyz44k_Delete id={row.id} /> */}
-                                            </MyCenterFull>
-                                        )}
+                                        // renderRowActions={({ row }) => (
+                                        //     <MyCenterFull>
+                                        //         <MyButton>xoá</MyButton>
+                                        //         {/* <F_wqk1jyz44k_Update values={row.original} />
+                                        //         <F_wqk1jyz44k_Delete id={row.id} /> */}
+                                        //     </MyCenterFull>
+                                        // )}
                                         
                 />
     )
