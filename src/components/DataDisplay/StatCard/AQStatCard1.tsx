@@ -55,12 +55,6 @@ export default function AQStatCard1(
                     <Text tt="uppercase" fz="xs" c="dimmed">
                         {description}
                     </Text>
-                    <Button
-                        variant="light"
-                        size="xs"
-                    >
-                        Xem chi tiết
-                    </Button>
                 </Group>
             </Paper>
         </>

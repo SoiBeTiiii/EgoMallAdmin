@@ -17,7 +17,6 @@ export const menuData: I0LinkItem[] = [
       { pageId: 3, name: "Products management", label: "Quản lý sản phẩm", link: "kep33um7fa" },
       // { pageId: 5, name: "Order management", label: "Quản lý brands", link: "ibdt9veg94" },
       { pageId: 6, name: "Coupon management", label: "Quản lý coupouns", link: "coupon" },
-      // { pageId: 7, name: "promotions management", label: "Quản lý khuyễn mại", link: "bwjcibv0g4" },
       { pageId: 8, name: "Order management", label: "Quản lý đơn hàng", link: "mnxwdc651m" },
       { pageId: 12, name: "Review management", label: "Quản lý đánh giá", link: "review" },
       { pageId: 11, name: "Blog management", label: "Quản lý blog", link: "blog" },

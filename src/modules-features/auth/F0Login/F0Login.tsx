@@ -29,8 +29,8 @@ export default function F0Login() {
     const mutation = useM_Account_Sigin()
     const form = useForm({
         initialValues: {
-            account: "admin@egomall.local",
-            password: "Admin123!"
+            account: "",
+            password: ""
         },
         validate: {
             account: (value) => value ? null : 'Không được để trống',
@@ -67,12 +67,6 @@ export default function F0Login() {
                 <Title ta="center" className={classes.title}>
                     Đăng nhập!
                 </Title>
-                <Text c="dimmed" size="sm" ta="center" mt={5}>
-                    Bạn gặp vấn đề kỹ thuật?&nbsp;
-                    <Anchor size="sm" component="button">
-                        Vào link này
-                    </Anchor>
-                </Text>
             </Flex>
                     <form onSubmit={form.onSubmit(async values => handleSubmit(values.account, values.password))}>
                 <MyFlexColumn>
@@ -90,7 +84,7 @@ export default function F0Login() {
                     />
                     <Group justify="space-between" >
                         <Checkbox label="Lưu đăng nhập" />
-                        <Anchor component={Link} href={"quen-mat-khau"} size="sm">
+                        <Anchor component={Link} href={"forgotpassword"} size="sm">
                             Quên mật khẩu?
                         </Anchor>
                     </Group>
@@ -100,16 +94,6 @@ export default function F0Login() {
                         fullWidth >
                         Đăng nhập
                     </Button>
-                    <Button
-                        onClick={() => {
-                            S0Auth.setProperty("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NTA4IiwiY19oYXNoIjoiNjgxNTMzZjI1OTU5NjIxOGY5ZWQ4YjRjZGU2Nzk5ODAyYWNlOTVmZjdiODQ3MWE3MjY4ZmM1NTc3ZDkxOTJjNiIsImp0aSI6IjljYjk2N2E4LTRlMWMtNDFkMi05NmU0LTExYzhlOThlYjEyOCIsImlhdCI6MTczNjEyODA2OCwibmJmIjoxNzM2MTI4MDY3LCJleHAiOjE3NDM5MDQwNjcsImlzcyI6Iklzc3VlciIsImF1ZCI6IkF1ZGllbmNlIn0.qCv-erjW74az5C9_Llh5N5aXO9yyLm6smB5NCnjm_uc")
-                            router.replace("/admin/dashboard")
-                        }}
-                        type="button"
-                        fullWidth >
-                        Vào trang chủ (Sử dụng token tạo sẵn)
-                    </Button>
-
                 </MyFlexColumn>
             </form>
         </Paper>

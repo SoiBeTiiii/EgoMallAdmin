@@ -2,17 +2,11 @@
 import baseAxios from "@/api/baseAxios";
 import AQStatCard1 from "@/components/DataDisplay/StatCard/AQStatCard1";
 import BarChart_CourseStatus from "@/modules-features/admin/(core)/MainDashboard/BarChart_CourseStatus";
-import BarChart_ExamStatus from "@/modules-features/admin/(core)/MainDashboard/BarChart_ExamStatus";
-import BarChart_RevenueByAcademicYear from "@/modules-features/admin/(core)/MainDashboard/BarChart_RevenueByAcademicYear";
 import BarChart_StudentStatusIn30Days from "@/modules-features/admin/(core)/MainDashboard/BarChart_StudentStatusIn30Days";
 import HBarChart_CourseDropOutPercentage from "@/modules-features/admin/(core)/MainDashboard/HBarChart_CourseDropOutPercentage";
 import HBarChart_CourseProgressPercentage from "@/modules-features/admin/(core)/MainDashboard/HBarChart_CourseProgressPercentage";
 import LineChart_RevenueIn12Months from "@/modules-features/admin/(core)/MainDashboard/LineChart_RevenueIn12Months";
 import LineChart_TotalRevenueByDiscountIn3Months from "@/modules-features/admin/(core)/MainDashboard/LineChart_TotalRevenueByDiscountIn3Months";
-import LineChart_TotalRevenueByVoucherIn3Months from "@/modules-features/admin/(core)/MainDashboard/LineChart_TotalRevenueByVoucherIn3Months";
-import LineChart_TotalStudentIn12Months from "@/modules-features/admin/(core)/MainDashboard/LineChart_TotalStudentIn12Months";
-import ViewDiscountStat from "@/modules-features/admin/(core)/MainDashboard/ViewDiscountStat";
-import ViewVoucherStat from "@/modules-features/admin/(core)/MainDashboard/ViewVoucherStat";
 
 import { Grid, Paper, ScrollArea, SimpleGrid } from "@mantine/core";
 import { IconBook, IconClipboardCheck, IconReportMoney, IconUserPlus } from "@tabler/icons-react";

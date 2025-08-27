@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Paper, Flex, Title, Text, Anchor, Button, TextInput, PasswordInput } from "@mantine/core";
+import { Paper, Flex, Title, Text, Anchor, Button, TextInput, PasswordInput, Group, Checkbox } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import classes from "./css.module.css";
 import MyFlexColumn from "@/components/Layouts/FlexColumn/MyFlexColumn";
+import Link from "next/link";
 
 export default function F0ForgotPassword() {
   const router = useRouter();
@@ -88,6 +89,9 @@ export default function F0ForgotPassword() {
             <Button type="submit" loading={sendOtpMutation.status === "error"} fullWidth>
               Gửi mã OTP
             </Button>
+            <Anchor component={Link} href={"login"} size="sm">
+              Quay lại trang chủ
+            </Anchor>
           </MyFlexColumn>
         </form>
       )}
