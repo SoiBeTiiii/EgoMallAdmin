@@ -20,9 +20,28 @@ export default function F_ibdt9veg94_Update({ values }: { values: I_ibdt9veg94_U
   const form = useForm<I_ibdt9veg94_Update>({
     initialValues: values,
     validate: {
+    name: (value) =>
+      value.trim().length > 0
+        ? null
+        : "Tên thương hiệu không được để trống",
 
-    }
-  });
+    slug: (value) =>
+      value && !/^[a-z0-9-]+$/.test(value)
+        ? "Slug chỉ được chứa chữ thường, số và dấu gạch ngang"
+        : null,
+
+    description: (value) =>
+      value && value.length > 1000
+        ? "Mô tả quá dài (tối đa 1000 ký tự)"
+        : null,
+
+    is_active: (v) =>
+      typeof v !== "boolean" ? "Trạng thái không hợp lệ" : null,
+
+    is_featured: (v) =>
+      typeof v !== "boolean" ? "Trạng thái không hợp lệ" : null,
+  },
+});
 
   const [imageFile, setImageFile] = useState<string | null>(null);
   return (

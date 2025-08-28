@@ -1,11 +1,12 @@
 import baseAxios from "@/api/baseAxios"
+import MyButtonCreate from "@/components/Buttons/ButtonCRUD/MyButtonCreate"
+import MyCheckbox from "@/components/Checkbox/MyCheckbox"
 import ImageUploaderBox from "@/components/ImageUploaderBox/brands/ImageUploaderBox"
-import MyFileInput from "@/components/Inputs/FileInput/MyFileInput"
-import MyTextEditor from "@/components/Inputs/TextEditor/MyTextEditor"
-import { Box, Checkbox } from "@mantine/core"
+import MyTextArea from "@/components/Inputs/TextArea/MyTextArea"
+import MyTextInput from "@/components/Inputs/TextInput/MyTextInput"
+import { Box } from "@mantine/core"
 import { useForm } from "@mantine/form"
 import { useDisclosure } from "@mantine/hooks"
-import { MyButtonCreate, MyTextArea, MyTextInput } from "aq-fe-framework/components"
 import { useState } from "react"
 
   export interface I_ibdt9veg94_Create {
@@ -32,14 +33,35 @@ export default function F_ibdt9veg94_Create() {
             is_featured: false,
         },
         validate: {
-        }
-    });
+    name: (value) =>
+      value.trim().length > 0
+        ? null
+        : "Tên thương hiệu không được để trống",
+
+    slug: (value) =>
+      value && !/^[a-z0-9-]+$/.test(value)
+        ? "Slug chỉ được chứa chữ thường, số và dấu gạch ngang"
+        : null,
+
+    description: (value) =>
+      value && value.length > 1000
+        ? "Mô tả quá dài (tối đa 1000 ký tự)"
+        : null,
+
+    is_active: (v) =>
+      typeof v !== "boolean" ? "Trạng thái không hợp lệ" : null,
+
+    is_featured: (v) =>
+      typeof v !== "boolean" ? "Trạng thái không hợp lệ" : null,
+  },
+});
     
       const [imageFile, setImageFile] = useState<string | null>(null);
     
 
     return (
         <MyButtonCreate
+  
             label="Thêm"
             modalSize={"50%"}
             disclosure={disc}
@@ -49,7 +71,7 @@ export default function F_ibdt9veg94_Create() {
                 return await baseAxios.post("/brands", form.values);
             }}
         >
-            <MyTextInput label="Tên thương hiệu" {...form.getInputProps("name")} />
+            <MyTextInput withAsterisk label="Tên thương hiệu" {...form.getInputProps("name")} />
             <MyTextInput label="Slug" {...form.getInputProps("slug")} />
             <Box>
                     <ImageUploaderBox
@@ -73,8 +95,9 @@ export default function F_ibdt9veg94_Create() {
                     />
                   </Box>
             <MyTextArea label="Mô tả" {...form.getInputProps("description")} />
-            <Checkbox label="Trang thái" {...form.getInputProps("is_active")} />
-            <Checkbox label="Nổi bật" {...form.getInputProps("is_featured")} />
+            <MyCheckbox label="Trang thái" {...form.getInputProps("is_active")} />
+            <MyCheckbox label="Nổi bật" {...form.getInputProps("is_featured")} />
         </MyButtonCreate>
+        
     )
 }

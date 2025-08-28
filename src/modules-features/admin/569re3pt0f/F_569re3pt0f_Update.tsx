@@ -72,14 +72,12 @@ export default function F_569re3pt0f_Update({ values }: { values: IUser }) {
         <MyTextInput label="Họ và tên" {...form.getInputProps("name")} />
         <MyTextInput label="Email" {...form.getInputProps("email")} />
         <MyTextInput label="Số điện thoại" type="tel" {...form.getInputProps("phone")} />
-
         {/* 🔄 dùng role_id thay cho role_name */}
         <MySelect
           label="Phân quyền"
           {...form.getInputProps("role_name")}
           data={roleOptions || []}
         />
-
         <MyCheckbox
           label="Trạng thái"
           {...form.getInputProps("is_active", { type: "checkbox" })}

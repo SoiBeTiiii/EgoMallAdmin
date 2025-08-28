@@ -1,20 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
-import MyFileInput from "@/components/Inputs/FileInput/MyFileInput"; 
-import { Button, Checkbox, Select, TextInput } from "@mantine/core"; 
-import { useForm } from "@mantine/form"; 
-import { useDisclosure } from "@mantine/hooks"; 
-import { MyTextInput } from "aq-fe-framework/components"; 
-import MySelect from "@/components/Combobox/Select/MySelect"; 
-import MyButtonCreate from "@/components/Buttons/ButtonCRUD/MyButtonCreate"; 
+import { Box } from "@mantine/core";
+import { useForm } from "@mantine/form";
+import { useDisclosure } from "@mantine/hooks";
+import { MyTextInput } from "aq-fe-framework/components";
+import MySelect from "@/components/Combobox/Select/MySelect";
+import MyButtonCreate from "@/components/Buttons/ButtonCRUD/MyButtonCreate";
 import baseAxios from "@/api/baseAxios";
+import ImageUploaderBox from "@/components/ImageUploaderBox/users/ImageUploaderBox";
+import { useState } from "react";
+import MyCheckbox from "@/components/Checkbox/MyCheckbox";
 export interface I_569re3pt0f_Create {
-    name: string;
-    email: string;
-    phone: string;
-    image: string;
-    role_name: string;
-    is_active: boolean;
-    email_verified_at: string;
+  name: string;
+  email: string;
+  phone: string;
+  image: string;
+  role_name: string;
+  is_active: boolean;
+  email_verified_at: string;
 }
 export default function F_569re3pt0f_Create() {
   const disc = useDisclosure(false)
@@ -43,6 +45,8 @@ export default function F_569re3pt0f_Create() {
     },
   });
 
+  const [imageFile, setImageFile] = useState<string | null>(null);
+
   return (
     <MyButtonCreate
       label="Thêm"
@@ -57,7 +61,27 @@ export default function F_569re3pt0f_Create() {
       <MyTextInput label="Họ và tên" {...form.getInputProps("name")} />
       <MyTextInput label="Email" {...form.getInputProps("email")} />
       <MyTextInput label="Số điện thoại" {...form.getInputProps("phone")} />
-      <MyFileInput label="Ảnh đại diện" {...form.getInputProps("image")} />
+      <Box>
+        <ImageUploaderBox
+          img={{ url: imageFile ?? "" }}
+          label="Ảnh đại diện"
+          width={200}
+          height={200}
+          previewShape="square"
+          uploadToken={`${process.env.NEXT_PUBLIC_UPLOAD_TOKEN}`}
+          showRemoveButton={!!imageFile}
+          onChange={(val) => {
+            if (typeof val === "string") {
+              setImageFile(val);
+              form.setFieldValue("image", val);
+            }
+          }}
+          onRemove={() => {
+            setImageFile(null);
+            form.setFieldValue("image", "");
+          }}
+        />
+      </Box>
 
       {/* ✅ thay bằng data từ API */}
       <MySelect
@@ -67,7 +91,7 @@ export default function F_569re3pt0f_Create() {
         {...form.getInputProps("role_name")}
       />
 
-      <Checkbox label="Trạng thái" {...form.getInputProps("is_active", { type: "checkbox" })} />
+      <MyCheckbox label="Trạng thái" {...form.getInputProps("is_active", { type: "checkbox" })} />
       <MyTextInput label="Ngày xác nhận" {...form.getInputProps("email_verified_at")} />
     </MyButtonCreate>
   );
