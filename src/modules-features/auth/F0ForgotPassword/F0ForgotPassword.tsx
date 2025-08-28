@@ -89,7 +89,7 @@ export default function F0ForgotPassword() {
             <Button type="submit" loading={sendOtpMutation.status === "error"} fullWidth>
               Gửi mã OTP
             </Button>
-            <Anchor component={Link} href={"login"} size="sm">
+            <Anchor component={Link} href={"auth/login"} size="sm">
               Quay lại trang chủ
             </Anchor>
           </MyFlexColumn>
