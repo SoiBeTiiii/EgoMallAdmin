@@ -9,7 +9,7 @@ import { useDisclosure } from "@mantine/hooks"
 import { MyTextArea, MyTextInput } from "aq-fe-framework/components"
 import { useState } from "react"
 
-  export interface I_k8gyh3atv7_Create {
+export interface I_k8gyh3atv7_Create {
     id: number;
     name: string;
     description: string;
@@ -17,7 +17,7 @@ import { useState } from "react"
     is_active: boolean;
     is_default: boolean;
     created_at?: string; // dạng ISO hoặc datetime string
-  }
+}
 
 export default function F_k8gyh3atv7_Create() {
     const disc = useDisclosure(false)
@@ -32,9 +32,21 @@ export default function F_k8gyh3atv7_Create() {
             is_default: false,
         },
         validate: {
-        }
+            name: (value) =>
+                value.trim().length === 0 ? "Vui lòng nhập phương thức giao hàng" : null,
+            description: (value) =>
+                value.trim().length < 10
+                    ? "Mô tả phải có ít nhất 10 ký tự"
+                    : null,
+            estimated_time: (value) =>
+                value.trim().length === 0
+                    ? "Vui lòng nhập thời gian giao hàng"
+                    : !/^[0-9]+( ngày| giờ| phút)?$/i.test(value.trim())
+                        ? "Thời gian giao hàng không hợp lệ (vd: '3 ngày')"
+                        : null,
+        },
     });
-    
+
 
     return (
         <MyButtonCreate
@@ -42,7 +54,7 @@ export default function F_k8gyh3atv7_Create() {
             modalSize={"50%"}
             disclosure={disc}
             form={form}
-            onSubmit={ async (values) => {
+            onSubmit={async (values) => {
                 console.log("Thêm thành công: ", form.values);
                 return await baseAxios.post("/shipping-methods", form.values);
             }}

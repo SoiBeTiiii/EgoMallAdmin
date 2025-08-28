@@ -63,11 +63,58 @@ export default function F_am7u4vy7yv_Create() {
       Create_at: "",
       options: [],
     },
+
     validate: {
-      name: (value) =>
-        value.trim().length > 0 ? null : "không được để trống",
-      slug: (value) =>
-        value.trim().length > 0 ? null : "không được để trống",
+      name: (value) => {
+        if (!value.trim()) return "Tên danh mục là trường bắt buộc";
+        if (value.length > 255) return "Tên danh mục không được vượt quá 255 ký tự.";
+        return null;
+      },
+      slug: (value) => {
+        if (!value.trim()) return "Slug danh mục là trường bắt buộc";
+        if (value.length > 255) return "Slug không được vượt quá 255 ký tự.";
+        return null; // check unique slug để backend xử lý
+      },
+      parent_id: (value) => {
+        if (value && isNaN(Number(value))) return "Danh mục cha không hợp lệ";
+        return null;
+      },
+      description: (value) => {
+        if (value && typeof value !== "string") return "Mô tả danh mục phải là chuỗi";
+        return null;
+      },
+      thumbnail: (value) => {
+        if (!value) return null;
+        try {
+          new URL(value); // check url hợp lệ
+        } catch {
+          return "Hình của danh mục phải là url hợp lệ";
+        }
+        const regex = /\.(jpg|jpeg|png|gif|webp)$/i;
+        if (!regex.test(value)) return "Hình danh mục phải có dạng jpeg, png, jpg, gif hoặc webp.";
+        return null;
+      },
+      is_featured: (value) => {
+        if (typeof value !== "boolean") return "Trường nổi bật phải là boolean";
+        return null;
+      },
+      type: (value) => {
+        if (!value) return null;
+        if (!["product", "blog"].includes(value)) return "Loại danh mục không hợp lệ";
+        return null;
+      },
+      options: (value, values) => {
+        if (values.type === "product") {
+          if (!Array.isArray(value)) return "Danh sách options phải là mảng";
+          if (value.length === 0) return "Danh sách options phải có ít nhất 1 option";
+          for (let i of value) {
+            if (typeof i !== "number") return "Các options phải là số";
+          }
+        } else if (value && value.length > 0) {
+          return "Trường options chỉ được sử dụng khi loại danh mục là sản phẩm";
+        }
+        return null;
+      },
     },
   });
 
@@ -124,7 +171,7 @@ export default function F_am7u4vy7yv_Create() {
     >
       <MyTextInput required label="Tên" {...form.getInputProps("name")} />
       <MyTextInput required label="Slug" {...form.getInputProps("slug")} />
-      
+
       <MySelect
         data={categoryOptions || []}
         label="Danh mục"

@@ -21,8 +21,19 @@ export default function F_k8gyh3atv7_Update({ values }: { values: I_k8gyh3atv7_U
     const form = useForm<I_k8gyh3atv7_Update>({
         initialValues: values,
         validate: {
-
-        }
+            name: (value) =>
+                value.trim().length === 0 ? "Vui lòng nhập phương thức giao hàng" : null,
+            description: (value) =>
+                value.trim().length < 10
+                    ? "Mô tả phải có ít nhất 10 ký tự"
+                    : null,
+            estimated_time: (value) =>
+                value.trim().length === 0
+                    ? "Vui lòng nhập thời gian giao hàng"
+                    : !/^[0-9]+( ngày| giờ| phút)?$/i.test(value.trim())
+                        ? "Thời gian giao hàng không hợp lệ (vd: '3 ngày')"
+                        : null,
+        },
     });
 
     return (

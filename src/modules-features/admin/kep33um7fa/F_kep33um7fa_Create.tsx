@@ -81,7 +81,17 @@ export default function CreateProductForm() {
       image: "",
       variants: [] as Variant[],
     },
-  });
+    validate: {
+    name: (value) => (value.trim().length === 0 ? "Tên sản phẩm không được để trống" : null),
+    slug: (value) => (value.trim().length === 0 ? "Slug không được để trống" : null),
+    category_id: (value) => (!value ? "Vui lòng chọn danh mục" : null),
+    brand_id: (value) => (!value ? "Vui lòng chọn thương hiệu" : null),
+    type_skin: (value) => (value.trim().length === 0 ? "Vui lòng nhập loại da" : null),
+    description: (value) => (value.trim().length < 10 ? "Mô tả ít nhất 10 ký tự" : null),
+    image: (value) => (!value ? "Vui lòng chọn ảnh đại diện" : null),
+    variants: (value) => (value.length === 0 ? "Cần có ít nhất 1 biến thể" : null),
+  },
+});
 
   // ✅ tự động tạo slug từ name
   useEffect(() => {

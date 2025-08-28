@@ -11,7 +11,6 @@ import baseAxios from '@/api/baseAxios';
 import MySelect from '@/components/Combobox/Select/MySelect';
 import { MyTextInput } from 'aq-fe-framework/components';
 import { IconChevronDown, IconChevronUp } from '@tabler/icons-react';
-import router from 'next/router';
 
 export interface PromotionCreateFormValues {
   name: string;

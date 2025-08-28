@@ -22,16 +22,50 @@ export default function F_569re3pt0f_Create() {
   const disc = useDisclosure(false)
 
   const form = useForm<I_569re3pt0f_Create>({
-    initialValues: {
-      name: "",
-      email: "",
-      phone: "",
-      image: "",
-      role_name: "",
-      is_active: false,
-      email_verified_at: "",
+  initialValues: {
+    name: "",
+    email: "",
+    phone: "",
+    image: "",
+    role_name: "",
+    is_active: false,
+    email_verified_at: "",
+  },
+  validate: {
+    name: (value) => {
+      if (!value.trim()) return "Tên người dùng không được bỏ trống!";
+      if (value.length > 255) return "Tên người dùng không được vượt quá 255 ký tự!";
+      return null;
     },
-  });
+    email: (value) => {
+      if (!value.trim()) return "Email không được bỏ trống!";
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(value)) return "Email không hợp lệ!";
+      return null; // unique check làm ở backend
+    },
+    phone: (value) => {
+      if (!value) return null; // cho phép null
+      if (!/^0\d{9}$/.test(value)) return "Số điện thoại phải gồm 10 chữ số và bắt đầu bằng 0!";
+      return null;
+    },
+    role_name: (value) => {
+      if (!value) return "Vai trò là bắt buộc!";
+      if (!["admin", "staff"].includes(value)) return "Vai trò không hợp lệ!";
+      return null;
+    },
+    is_active: (value) => {
+      if (typeof value !== "boolean") return "Trạng thái không hợp lệ!";
+      return null;
+    },
+    image: (value) => {
+      if (!value) return null; // cho phép rỗng
+      const allowedExt = /\.(jpg|jpeg|png|svg|webp)$/i;
+      if (!allowedExt.test(value)) return "Ảnh đại diện phải có định dạng jpg, jpeg, png, svg hoặc webp!";
+      return null;
+    },
+  },
+});
+
 
   // ✅ query role assignable
   const { data: roleOptions } = useQuery({
