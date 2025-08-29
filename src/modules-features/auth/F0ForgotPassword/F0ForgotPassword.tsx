@@ -18,7 +18,7 @@ export default function F0ForgotPassword() {
   // Bước 1: gửi email để nhận OTP
   const sendOtpMutation = useMutation({
     mutationFn: async (values: { email: string }) => {
-      const res = await axios.post(process.env.NEXT_PUBLIC_API2 + "forgot-password", values);
+      const res = await axios.post(process.env.NEXT_PUBLIC_API_2 + "forgot-password", values);
       return res.data;
     },
     onSuccess: () => {
@@ -29,7 +29,7 @@ export default function F0ForgotPassword() {
   // Bước 2: verify OTP
   const verifyOtpMutation = useMutation({
     mutationFn: async (values: { email: string; otp: string }) => {
-      const res = await axios.post(process.env.NEXT_PUBLIC_API2 + "verify-reset-otp", values);
+      const res = await axios.post(process.env.NEXT_PUBLIC_API_2 + "verify-reset-otp", values);
       return res.data;
     },
     onSuccess: () => {
@@ -40,7 +40,7 @@ export default function F0ForgotPassword() {
   // Bước 3: đặt mật khẩu mới
   const resetPasswordMutation = useMutation({
     mutationFn: async (values: { email: string; new_password: string; new_password_confirmation: string }) => {
-      const res = await axios.post(process.env.NEXT_PUBLIC_API2 + "set-new-password", values);
+      const res = await axios.post(process.env.NEXT_PUBLIC_API_2 + "set-new-password", values);
       return res.data;
     },
     onSuccess: () => {
