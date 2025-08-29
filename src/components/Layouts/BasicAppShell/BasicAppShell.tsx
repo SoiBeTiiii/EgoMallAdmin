@@ -6,6 +6,7 @@ import { useS0Sidebar } from "@/stores/S0Sidebar";
 import {
   ActionIcon,
   AppShell,
+  Avatar,
   Badge,
   Divider,
   Group,
@@ -253,17 +254,18 @@ export function BasicAppShell({
 
             {/* Right side */}
             <Group>
-              {/* <Text>Học kỳ làm việc</Text>
-              <Select
-                w={selectMedia ? 245 : 150}
-                placeholder="Chọn công thức sắp xếp"
-                defaultValue={1?.toString()}
-                data={[
-                  { value: "1", label: "Năm học 2024 - 2025 Học kỳ 1" },
-                  { value: "2", label: "Năm học 2024 - 2025 Học kỳ 1" },
-                ]}
-              /> */}
               <MySwitchTheme /> 
+              <Tooltip label="Trang cá nhân">
+    <Link href="profile">
+      <Avatar
+        src="/imgs/users/avatar-demo.png" // đường dẫn avatar user (hoặc state lấy từ backend)
+        alt="User avatar"
+        radius="xl"
+        size="md"
+        style={{ cursor: "pointer" }}
+      />
+    </Link>
+  </Tooltip>
             </Group>
           </Group>
         ) : (

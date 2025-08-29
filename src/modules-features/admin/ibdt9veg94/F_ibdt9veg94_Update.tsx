@@ -46,7 +46,7 @@ export default function F_ibdt9veg94_Update({ values }: { values: I_ibdt9veg94_U
   const [imageFile, setImageFile] = useState<string | null>(null);
   return (
     <MyActionIconUpdate form={form} onSubmit={async (values) => {
-      await baseAxios.put(`/brands/${form.values.id}`, form.values);
+      await baseAxios.post(`/brands/${form.values.id}`, form.values);
     }}>
 
       <MyTextInput label="Tên thương hiệu" {...form.getInputProps("name")} />

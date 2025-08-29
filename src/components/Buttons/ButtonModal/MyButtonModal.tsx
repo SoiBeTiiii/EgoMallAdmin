@@ -1,6 +1,5 @@
 import MyFlexColumn from "@/components/Layouts/FlexColumn/MyFlexColumn";
 import { T0CRUD, T0MANTINE_SIZE } from "@/types/types";
-
 import { Button, ButtonProps, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";

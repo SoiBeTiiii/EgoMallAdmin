@@ -6,7 +6,7 @@ import {
   MyTextArea,
   MyTextInput,
 } from "aq-fe-framework/components";
-import { Button, Group, Paper, Title, Box } from "@mantine/core";
+import { Box, Title } from "@mantine/core";
 import baseAxios from "@/api/baseAxios";
 import { useQuery } from "@tanstack/react-query";
 import slugify from "slugify";
@@ -17,20 +17,6 @@ import MyActionIconUpdate from "@/components/ActionIcons/ActionIconCRUD/MyAction
 interface Images {
   url: string | File;
 }
-
-interface VariantOption {
-  id: number;
-  name: string;
-  value: string;
-}
-
-interface Category {
-  id: number;
-  name: string;
-  options: { id: number; name: string }[];
-  children?: Category[];
-}
-
 interface Variant {
   id?: number;
   sku: string;
@@ -38,99 +24,30 @@ interface Variant {
   sale_price: number;
   quantity: number;
   is_active: boolean;
-  option_transform?: {
-    name: string;
-    value: string;
-  }[];
-  options: {
-    id: number;
-    name: string;
-    value: string;
-  }[];
+  option_transform?: { name: string; value: string }[];
+  options: { id: number; name: string; value: string }[];
   images: Images[];
 }
-
-type OptionSelected = {
+interface Category {
   id: number;
   name: string;
-  values: string[];
-};
-
+  options: { id: number; name: string }[];
+  children?: Category[];
+}
+type OptionSelected = { id: number; name: string; values: string[] };
 interface ProductUpdate {
   id?: number;
   name: string;
   slug: string;
-  category: string;
+  category: string | number;
   is_active: boolean;
-  brand: string;
+  brand: string | number;
   type_skin: string;
   description: string;
   image: string;
-  deleted_at: string;
-  created_at: string;
-  updated_at: string;
   variants: Variant[];
   option_selecteds?: OptionSelected[];
 }
-
-const flattenCategories = (categories: any[], level = 0, seen = new Set<string>()): { value: string; label: string }[] => {
-  let result: { value: string; label: string }[] = [];
-  categories.forEach((cat) => {
-    const val = cat.id.toString();
-    if (!seen.has(val)) {
-      seen.add(val);
-      const indent = "— ".repeat(level);
-      result.push({ value: val, label: `${indent}${cat.name}` });
-    }
-    if (cat.children?.length > 0) {
-      result = result.concat(flattenCategories(cat.children, level + 1, seen));
-    }
-  });
-  return result;
-};
-
-
-export default function F_kep33um7fa_Update({ values }: { values: ProductUpdate }) {
-  const form = useForm<ProductUpdate>({
-    initialValues: {
-      ...values,
-      category: values.category.toString() ?? "",
-      brand: values.brand?.toString() ?? "",
-      type_skin: values.type_skin ?? "",       // thêm cái này
-      description: values.description ?? "",   // thêm cái này
-      image: values.image ?? "",               // thêm cái này
-      name: values.name ?? "",                 // thêm cái này
-      slug: values.slug ?? "",                 // thêm cái này
-      variants: values.variants?.map((variant) => {
-      const transformedOptions: VariantOption[] =
-        variant.option_transform?.map(({ name, value }) => {
-          const optionDef = values.option_selecteds?.find((opt) => opt.name === name);
-          return {
-            id: optionDef?.id ?? 0,
-            name,
-            value,
-          };
-        }) ?? [];
-
-      return {
-        ...variant,
-        sku: variant.sku?.toString() ?? "",
-        images: variant.images ?? [],
-        options: transformedOptions,
-      };
-    }) ?? [],
-    },
-    validate: {
-    name: (value) => (value.trim().length === 0 ? "Tên sản phẩm không được để trống" : null),
-    slug: (value) => (value.trim().length === 0 ? "Slug không được để trống" : null),
-    category: (value) => (!value ? "Vui lòng chọn danh mục" : null),
-    brand: (value) => (!value ? "Vui lòng chọn thương hiệu" : null),
-    type_skin: (value) => (value.trim().length === 0 ? "Vui lòng nhập loại da" : null),
-    description: (value) => (value.trim().length < 10 ? "Mô tả ít nhất 10 ký tự" : null),
-    image: (value) => (!value ? "Vui lòng chọn ảnh đại diện" : null),
-    variants: (value) => (value.length === 0 ? "Cần có ít nhất 1 biến thể" : null),
-  },
-});
 
 const leafCategories = (categories: any[]): { value: string; label: string }[] => {
   const result: { value: string; label: string }[] = [];
@@ -141,7 +58,7 @@ const leafCategories = (categories: any[]): { value: string; label: string }[] =
       if (cat.children?.length > 0) {
         traverse(cat.children);
       } else {
-        const val = cat.id.toString();
+        const val = String(cat.id ?? "");
         if (!seen.has(val)) {
           seen.add(val);
           result.push({ value: val, label: cat.name });
@@ -154,18 +71,48 @@ const leafCategories = (categories: any[]): { value: string; label: string }[] =
   return result;
 };
 
-  const { data: brandOptions, isLoading: isLoadingBrands } = useQuery({
+export default function F_kep33um7fa_Update({ values }: { values: ProductUpdate }) {
+  const form = useForm<ProductUpdate>({
+    initialValues: {
+      ...values,
+      category: String(values.category ?? ""),
+      brand: String(values.brand ?? ""),
+      type_skin: values.type_skin ?? "",
+      description: values.description ?? "",
+      image: values.image ?? "",
+      name: values.name ?? "",
+      slug: values.slug ?? "",
+      variants:
+        values.variants?.map((variant) => ({
+          ...variant,
+          sku: String(variant.sku ?? ""),
+          images: variant.images ?? [],
+          options:
+            variant.option_transform?.map(({ name, value }) => {
+              const optionDef = values.option_selecteds?.find((opt) => opt.name === name);
+              return {
+                id: optionDef?.id ?? 0,
+                name,
+                value,
+              };
+            }) ?? [],
+        })) ?? [],
+    },
+  });
+
+  // Fetch brand + category
+  const { data: brandOptions } = useQuery({
     queryKey: ["F_kep33um7fa_Update_brands"],
     queryFn: async () => {
       const res = await baseAxios.get("/brands");
       return (res.data.data || []).map((item: any) => ({
-        value: item.id.toString(),
+        value: String(item.id),
         label: item.name,
       }));
     },
   });
 
-  const { data: categoryOptionsRaw, isLoading: isLoadingCategories } = useQuery({
+  const { data: categoryOptionsRaw } = useQuery({
     queryKey: ["F_kep33um7fa_Update_categories"],
     queryFn: async () => {
       const res = await baseAxios.get("/categories");
@@ -173,14 +120,14 @@ const leafCategories = (categories: any[]): { value: string; label: string }[] =
     },
   });
 
-  const categoryOptions = useMemo(() => {
-  if (!categoryOptionsRaw) return [];
-  return leafCategories(categoryOptionsRaw);
-}, [categoryOptionsRaw]);
+  const categoryOptions = useMemo(
+    () => (categoryOptionsRaw ? leafCategories(categoryOptionsRaw) : []),
+    [categoryOptionsRaw]
+  );
 
-
+  // tìm category theo id
   const selectedCategory = useMemo(() => {
-    const selectedCatId = parseInt(form.values.category);
+    const selectedCatId = Number(form.values.category);
     const findCategoryById = (categories: Category[], id: number): Category | undefined => {
       for (const cat of categories) {
         if (cat.id === id) return cat;
@@ -194,27 +141,32 @@ const leafCategories = (categories: any[]): { value: string; label: string }[] =
     return findCategoryById(categoryOptionsRaw || [], selectedCatId);
   }, [categoryOptionsRaw, form.values.category]);
 
-  const selectedCategoryValue = useMemo(() => {
-    return categoryOptions.find((cat) => cat.value === form.values.category)?.value ?? "";
-  }, [categoryOptions, form.values.category]);
+  const selectedCategoryValue = useMemo(
+    () =>
+      categoryOptions.find((cat) => cat.value === String(form.values.category))
+        ?.value ?? "",
+    [categoryOptions, form.values.category]
+  );
 
+  // auto slug
   useEffect(() => {
-      const name = form.values.name.trim();
-      const generatedSlug = name ? slugify(name, { lower: true, strict: true }) : "";
-      if (form.values.slug !== generatedSlug) {
-        form.setFieldValue("slug", generatedSlug);
-      }
-    }, [form,form.values.name])
+    const name = form.values.name?.trim() ?? "";
+    const generatedSlug = name ? slugify(name, { lower: true, strict: true }) : "";
+    if (form.values.slug !== generatedSlug) {
+      form.setFieldValue("slug", generatedSlug);
+    }
+  }, [form.values.name]);
 
   return (
     <MyActionIconUpdate
-      modalSize={"50%"}
+      modalSize="50%"
       form={form}
       onSubmit={async (values) => {
-        const {brand,category,option_selecteds, created_at, updated_at, ...rest} = values
+        const { brand, category, option_selecteds, ...rest } = values;
         const payload = {
           ...rest,
-          brand_id: parseInt(values.brand),
+          brand_id: Number(brand),
+          category_id: Number(category),
           variants: values.variants.map((v) => ({
             id: v.id,
             sku: v.sku,
@@ -227,38 +179,19 @@ const leafCategories = (categories: any[]): { value: string; label: string }[] =
           })),
         };
         const res = await baseAxios.put(`/products/${values.id}`, payload);
-        const updatedVariants = res.data?.data?.variants || [];
-        const optionSelectedMatch = res.data?.data?.option_selecteds || [];
-        const transformed = updatedVariants.map((variant: Variant) => ({
-          ...variant,
-          options: (variant.option_transform || []).map((opt: any) => {
-            const match = optionSelectedMatch.find((o: any) => o.name === opt.name);
-            return {
-              id: match?.id || 0,
-              name: opt.name,
-              value: opt.value,
-            };
-          }),
-          images: variant.images || [],
-        }));
-
-        form.setFieldValue("variants", transformed);
-
-        return res
+        return res;
       }}
     >
       <MyTextInput label="Tên" required {...form.getInputProps("name")} />
       <MyTextInput label="Slug" required {...form.getInputProps("slug")} />
 
-      {!isLoadingCategories && (
-        <MySelect
-          data={categoryOptions}
-          label="Danh mục"
-          required
-          disabled
-          value={selectedCategoryValue}
-        />
-      )}
+      <MySelect
+        data={categoryOptions}
+        label="Danh mục"
+        required
+        value={selectedCategoryValue}
+        disabled
+      />
 
       <MyCheckbox label="Trạng thái" {...form.getInputProps("is_active", { type: "checkbox" })} />
 
@@ -266,7 +199,6 @@ const leafCategories = (categories: any[]): { value: string; label: string }[] =
         data={brandOptions || []}
         label="Thương hiệu"
         required
-        disabled={isLoadingBrands}
         {...form.getInputProps("brand")}
       />
 
@@ -287,9 +219,7 @@ const leafCategories = (categories: any[]): { value: string; label: string }[] =
               form.setFieldValue("image", val);
             }
           }}
-          onRemove={() => {
-            form.setFieldValue("image", "");
-          }}
+          onRemove={() => form.setFieldValue("image", "")}
         />
       </Box>
 
@@ -306,21 +236,17 @@ const leafCategories = (categories: any[]): { value: string; label: string }[] =
         onChange={(newVariants) => {
           const transformed = newVariants.map((v) => ({
             ...v,
-            id: v.id,
             options: Object.entries(v.options).map(([id, value]) => {
-              const optionDef = selectedCategory?.options.find((opt) => opt.id.toString() === id.toString());
-              return {
-                id: Number(id),
-                name: optionDef?.name || "",
-                value,
-              };
+              const optionDef = selectedCategory?.options.find(
+                (opt) => String(opt.id) === String(id)
+              );
+              return { id: Number(id), name: optionDef?.name || "", value };
             }),
           }));
           form.setFieldValue("variants", transformed);
         }}
         initialMode="edit"
-/>
-
+      />
     </MyActionIconUpdate>
   );
 }

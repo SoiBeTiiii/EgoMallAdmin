@@ -1,4 +1,6 @@
 import { I0LinkItem } from "@/components/Layouts/BasicAppShell/BasicAppShell";
+import baseAxios, { baseAxiosAuth } from "@/api/baseAxios";
+
 
 export const menuData: I0LinkItem[] = [
   {
@@ -36,3 +38,26 @@ export const menuData: I0LinkItem[] = [
     ],
   }
 ];
+
+// Map role -> những pageId được phép xem
+const roleMap: Record<string, number[]> = {
+  "super-admin": [0, 1, 2, 3, 6, 8, 12, 11, 121, 9, 4, 10, 13],
+  "admin": [0, 1, 2, 3, 6, 8, 12, 11, 121, 9],
+  "staff": [0, 1, 8, 12, 11],
+};
+
+export async function getMenuForRole(role: string): Promise<I0LinkItem[]> {
+  const allowedIds = roleMap[role] || [];
+
+  return menuData
+    .map((menu) => {
+      if (menu.links) {
+        const filteredLinks = menu.links.filter(
+          (item) => item.pageId !== undefined && allowedIds.includes(item.pageId)
+        );
+        return filteredLinks.length > 0 ? { ...menu, links: filteredLinks } : null;
+      }
+      return menu.pageId !== undefined && allowedIds.includes(menu.pageId) ? menu : null;
+    })
+    .filter((menu): menu is I0LinkItem => menu !== null);
+}

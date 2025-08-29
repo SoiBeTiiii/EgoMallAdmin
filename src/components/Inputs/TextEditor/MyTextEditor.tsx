@@ -11,6 +11,7 @@ import Underline from '@tiptap/extension-underline';
 import { EditorOptions, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useEffect, useState } from 'react';
+import ImageUploaderControl from './ImageUploaderControl';
 export interface IMyTextEditor extends Partial<EditorOptions> {
     label?: string,
     error?: string,
@@ -142,6 +143,12 @@ export default function MyTextEditor({ autoHiddenToolBar=false,contentHeight="40
                     <RichTextEditor.ControlsGroup>
                         <RichTextEditor.Link />
                         <RichTextEditor.Unlink />
+                        {editor && (
+                            <ImageUploaderControl
+                            editor={editor}
+                            uploadToken={process.env.NEXT_PUBLIC_UPLOAD_TOKEN!}
+                            />
+                        )}
                     </RichTextEditor.ControlsGroup>
 
                     <RichTextEditor.ControlsGroup>

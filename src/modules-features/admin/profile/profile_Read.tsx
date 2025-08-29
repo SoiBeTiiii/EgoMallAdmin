@@ -31,7 +31,7 @@ type Profile = {
   permissions?: string[];
 };
 
-const API2 = process.env.NEXT_PUBLIC_API2; // 👈 lấy từ .env
+const API2 = process.env.NEXT_PUBLIC_API_2; // 👈 lấy từ .env
 
 export default function ProfilePage() {
   const qc = useQueryClient();

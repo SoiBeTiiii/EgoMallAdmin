@@ -43,7 +43,7 @@ export default function F0Login() {
             "account": account,
             "password": password
         }, {
-            onSuccess: (data) => {
+            onSuccess: async (data) => {
                 if (data.isSuccess === false) {
                     form.setFieldError("username", "Tài khoản không tồn tại!")
                     return
@@ -54,6 +54,7 @@ export default function F0Login() {
                 }
                 loadingState[1](false)
                 S0Auth.setProperty("token", data.data.token)
+                await S0Auth.fetchProfile()
                 router.replace("/admin/dashboard")
             },
             onSettled: () => {
@@ -101,7 +102,7 @@ export default function F0Login() {
 }
 
 function useM_Account_Sigin() {
-    const ENDPOINT = process.env.NEXT_PUBLIC_API2 + "login"
+    const ENDPOINT = process.env.NEXT_PUBLIC_API_2 + "login"
     const mutation = useMutation({
         mutationFn: async (values: { account?: string, password?: string  }) => {
             const result = await axios.post(ENDPOINT, values)
