@@ -45,7 +45,7 @@ export default function F0ForgotPassword() {
     },
     onSuccess: () => {
       alert("Đặt lại mật khẩu thành công, vui lòng đăng nhập lại!");
-      router.replace("/login");
+      router.replace("/auth/login");
     },
   });
 
